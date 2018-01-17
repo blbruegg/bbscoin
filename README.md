@@ -1,4 +1,4 @@
-BBSCoin бшлЁ╠р
+BBSCoin Х╝╨Е²⌡Е╦│
 
 ## Building BBSCoin 
 
