@@ -109,7 +109,6 @@ const std::initializer_list<const char*> SEED_NODES = {
    "seed.bbscoin.xyz:11204",
    "107.182.185.94:11204",
    "104.224.176.92:11204",
-   "45.32.252.201:11204"
   //"your_seed_ip1.com:8080",
   //"your_seed_ip2.com:8080",
 };
