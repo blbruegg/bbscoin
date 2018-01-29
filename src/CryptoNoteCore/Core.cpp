@@ -600,11 +600,11 @@ std::error_code Core::addBlock(const CachedBlock& cachedBlock, RawBlock&& rawBlo
     return error::BlockValidationError::CUMULATIVE_BLOCK_SIZE_TOO_BIG;
   }
 
-  // if (minerReward != reward) {
-  //   logger(Logging::WARNING) << "Block reward mismatch for block " << cachedBlock.getBlockHash()
-  //                            << ". Expected reward: " << reward << ", got reward: " << minerReward;
-  //   return error::BlockValidationError::BLOCK_REWARD_MISMATCH;
-  // }
+  if (minerReward != reward) {
+    logger(Logging::WARNING) << "Block reward mismatch for block " << cachedBlock.getBlockHash()
+                             << ". Expected reward: " << reward << ", got reward: " << minerReward;
+    return error::BlockValidationError::BLOCK_REWARD_MISMATCH;
+  }
 
   if (checkpoints.isInCheckpointZone(cachedBlock.getBlockIndex())) {
     if (!checkpoints.checkBlock(cachedBlock.getBlockIndex(), cachedBlock.getBlockHash())) {
