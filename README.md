@@ -1,4 +1,4 @@
-BBSCoin 论坛币
+BBSCoin(BBS) 论坛币 
 
 ## Building BBSCoin 
 
@@ -49,13 +49,6 @@ You may download them from:
 
 To build, change to a directory where this file is located, and run `make`. The resulting executables can be found in `build/release/src`.
 
-**Advanced options:**
-
-* Parallel build: run `make -j<number of threads>` instead of `make`.
-* Debug build: run `make build-debug`.
-* Test suite: run `make test-release` to run tests in addition to building. Running `make test-debug` will do the same to the debug version.
-* Building with Clang: it may be possible to use Clang instead of GCC, but this may not work everywhere. To build, run `export CC=clang CXX=clang++` before running `make`.
-
 ### On Windows
 Dependencies: MSVC 2013 or later, CMake 2.8.6 or later, and Boost 1.55. You may download them from:
 
@@ -73,5 +66,21 @@ cmake -G "Visual Studio 12 Win64" ..
 And then do Build.
 Good luck!
 
+### On OSX
+```
+brew update
+brew install cmake
+brew install boost
+make
+```
+The resulting executables can be found in `build/release/src`.
+
+**Advanced options:**
+
+* Parallel build: run `make -j<number of threads>` instead of `make`.
+* Debug build: run `make build-debug`.
+* Test suite: run `make test-release` to run tests in addition to building. Running `make test-debug` will do the same to the debug version.
+* Building with Clang: it may be possible to use Clang instead of GCC, but this may not work everywhere. To build, run `export CC=clang CXX=clang++` before running `make`.
+
 ## Donate
-BSC: fySNLTUCovtbYGcFMh4e4gcyJ2HZEFDhq9x4Qba3NSatcK87Q7HPM73LCHxydBRTsv8MKk7CPtNRbGmbr3n7DfBi2y6zTTyAv
+BBS: fySNLTUCovtbYGcFMh4e4gcyJ2HZEFDhq9x4Qba3NSatcK87Q7HPM73LCHxydBRTsv8MKk7CPtNRbGmbr3n7DfBi2y6zTTyAv
