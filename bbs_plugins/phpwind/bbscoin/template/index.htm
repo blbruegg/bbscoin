@@ -24,7 +24,7 @@ if(!$action){print <<<EOT
 	<tr class="tr3">
 		<th>充值</th>
 		<td><input type="text" size="5" class="input" style="width: auto;" id="addfundamount" name="amount" value="0" onkeyup="addcalcredit()" />&nbsp;{$credit->cType[$bbscoin_db[pay_credit]]} 
-		&nbsp;所需 BBSCoin <span id="desamount">0</span> BSC</td>
+		&nbsp;所需 BBSCoin <span id="desamount">0</span> BBS</td>
 	</tr>
 	<tr class="tr3">
 		<th></th>
@@ -60,7 +60,7 @@ if($bbscoin_db['pay_to_bbscoin']){print <<<EOT
 						<th>提币</th>
 						<td class="pns">
 							<input type="text" size="5" class="input" style="width: auto;" id="addcoinamount" name="amount" value="0" onkeyup="addcalcoin()" />
-							&nbsp;BSC
+							&nbsp;BBS
 							&nbsp;所需 <span id="coin_desamount">0</span> {$credit->cType[$bbscoin_db[pay_credit]]}
 						</td>
 					</tr>
