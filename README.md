@@ -6,7 +6,7 @@ BBSCoin 论坛币
 
 ```
 sudo apt-get install build-essential libboost-all-dev git
-git clone https://github.com/msxcms/bbscoin.git
+git clone https://github.com/bbscoin/bbscoin.git
 cd bbscoin
 mkdir build
 cd build
@@ -26,7 +26,7 @@ cd boost_1_66_0
 ./bootstrap.sh
 ./b2 install
 cd ..
-git clone https://github.com/msxcms/bbscoin.git
+git clone https://github.com/bbscoin/bbscoin.git
 cd bbscoin
 mkdir build
 cd build
