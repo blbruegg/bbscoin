@@ -1,4 +1,6 @@
-BBSCoin(BBS) 论坛币 
+# BBSCoin(BBS) 论坛币 
+
+This repo contains daemons for blockchain, payment and wallet service.
 
 ## Building BBSCoin 
 
