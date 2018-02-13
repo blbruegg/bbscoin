@@ -121,8 +121,9 @@ const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "8f80f9a5a434a9f1
 
 const char* const SEED_NODES[] = { 
   "seed.bbscoin.xyz:11204", 
-  "107.182.185.94:11204", 
+  "173.82.151.145:11204", 
   "104.224.176.92:11204" 
+  "207.148.71.221:11204" 
 };
 
 
