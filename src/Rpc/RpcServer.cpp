@@ -192,7 +192,7 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
       { "getlastblockheader", { makeMemberMethod(&RpcServer::on_get_last_block_header), false } },
       { "getblockheaderbyhash", { makeMemberMethod(&RpcServer::on_get_block_header_by_hash), false } },
       { "getblockheaderbyheight", { makeMemberMethod(&RpcServer::on_get_block_header_by_height), false } },
-      { "get_block_by_height", { makeMemberMethod(&RpcServer::on_get_block_by_height), false } }
+      { "on_get_txs_by_height", { makeMemberMethod(&RpcServer::on_get_txs_by_height), false } }
     };
 
     auto it = jsonRpcHandlers.find(jsonRequest.getMethod());
@@ -1008,7 +1008,7 @@ bool RpcServer::on_get_block_header_by_height(const COMMAND_RPC_GET_BLOCK_HEADER
   return true;
 }
 
-bool RpcServer::on_get_block_by_height(const COMMAND_RPC_BLOCK_BY_HEIGHT::request& req, COMMAND_RPC_BLOCK_BY_HEIGHT::response& res) {
+bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& req, COMMAND_RPC_TXS_BY_HEIGHT::response& res) {
   if (m_core.getTopBlockIndex() < req.height) {
     throw JsonRpc::JsonRpcError{ CORE_RPC_ERROR_CODE_TOO_BIG_HEIGHT,
       std::string("Invalid height: ") + std::to_string(req.height) + ", current blockchain height = " + std::to_string(m_core.getTopBlockIndex()) };
@@ -1019,8 +1019,34 @@ bool RpcServer::on_get_block_by_height(const COMMAND_RPC_BLOCK_BY_HEIGHT::reques
   CachedBlock cachedBlock(block);
   assert(cachedBlock.getBlockIndex() == req.height);
 
-  res.block = m_core.getBlockDetails(cachedBlock.getBlockHash());
+  BlockDetails blockDetails = m_core.getBlockDetails(cachedBlock.getBlockHash());;
+
+  res.index = blockDetails.index;
+  res.hash = blockDetails.hash;
   res.status = CORE_RPC_STATUS_OK;
+  res.majorVersion = blockDetails.majorVersion;
+  res.minorVersion = blockDetails.minorVersion;
+  res.timestamp = blockDetails.timestamp;
+  
+  for (const TransactionDetails txDetails : blockDetails.transactions) {
+    TransactionRecord txRecord;
+    txRecord.hash = txDetails.hash;
+    txRecord.publicKey = txDetails.extra.publicKey;
+    txRecord.inputs = txDetails.inputs;
+
+    // Create outputs
+    for (const TransactionOutputDetails txOutputDetails : txDetails.outputs) {
+      if (txOutputDetails.output.target.type() == typeid(KeyOutput)) {
+        TransactionOutputRecord txOutputRecord;
+        txOutputRecord.amount = txOutputDetails.output.amount;
+        txOutputRecord.key = boost::get<KeyOutput>(txOutputDetails.output.target).key;
+        txRecord.outputs.push_back(txOutputRecord);
+      }
+    }
+
+    res.transactions.push_back(txRecord);
+  }
+
 
   return true;
 }

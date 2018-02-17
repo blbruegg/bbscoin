@@ -751,7 +751,33 @@ struct COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES {
   };
 };
 
-struct COMMAND_RPC_BLOCK_BY_HEIGHT {
+struct TransactionOutputRecord {
+  uint64_t amount;
+  Crypto::PublicKey key;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(amount)
+    KV_MEMBER(key)
+  }
+};
+
+struct TransactionRecord {
+  Crypto::Hash hash;
+  Crypto::PublicKey publicKey; 
+  std::vector<std::vector<Crypto::Signature>> signatures;
+  std::vector<TransactionInputDetails> inputs;
+  std::vector<TransactionOutputRecord> outputs;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(hash)
+    KV_MEMBER(publicKey)
+    KV_MEMBER(signatures)
+    KV_MEMBER(inputs)
+    KV_MEMBER(outputs)
+  }
+};
+
+struct COMMAND_RPC_TXS_BY_HEIGHT {
   struct request {
     uint64_t height;
 
@@ -761,12 +787,22 @@ struct COMMAND_RPC_BLOCK_BY_HEIGHT {
   };
 
   struct response {
-    BlockDetails block;
     std::string status;
+    uint32_t index = 0;
+    Crypto::Hash hash;
+    uint8_t majorVersion = 0;
+    uint8_t minorVersion = 0;
+    uint64_t timestamp = 0;
+    std::vector<TransactionRecord> transactions;
 
     void serialize(ISerializer& s) {
       KV_MEMBER(status)
-      KV_MEMBER(block)
+      KV_MEMBER(index)
+      KV_MEMBER(hash)
+      KV_MEMBER(majorVersion)
+      KV_MEMBER(minorVersion)
+      KV_MEMBER(timestamp)
+      KV_MEMBER(transactions)
     }
   };
 };
