@@ -145,7 +145,7 @@ bool Currency::getBlockReward(uint8_t blockMajorVersion, size_t medianSize, size
 
   // slow down
   uint64_t emissionSpeedFactor = m_emissionSpeedFactor + (alreadyGeneratedCoins / (m_moneySupply / 6));
-  uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;
+  uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> emissionSpeedFactor;
 
   size_t blockGrantedFullRewardZone = blockGrantedFullRewardZoneByBlockVersion(blockMajorVersion);
   medianSize = std::max(medianSize, blockGrantedFullRewardZone);
