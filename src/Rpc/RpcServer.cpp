@@ -1032,6 +1032,8 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
     TransactionRecord txRecord;
     txRecord.hash = txDetails.hash;
     txRecord.publicKey = txDetails.extra.publicKey;
+    txRecord.fee = txDetails.fee;
+
     txRecord.inputs = txDetails.inputs;
 
     // Create outputs
