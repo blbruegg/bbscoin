@@ -765,6 +765,7 @@ struct TransactionRecord {
   Crypto::Hash hash;
   Crypto::PublicKey publicKey; 
   std::vector<std::vector<Crypto::Signature>> signatures;
+  uint64_t fee;
   std::vector<TransactionInputDetails> inputs;
   std::vector<TransactionOutputRecord> outputs;
 
@@ -772,6 +773,7 @@ struct TransactionRecord {
     KV_MEMBER(hash)
     KV_MEMBER(publicKey)
     KV_MEMBER(signatures)
+    KV_MEMBER(fee)
     KV_MEMBER(inputs)
     KV_MEMBER(outputs)
   }
