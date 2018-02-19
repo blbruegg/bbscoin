@@ -1,4 +1,4 @@
-![BBSCoin](https://bbscoin.xyz/img/logos/logo.png "BBSCoin")
+![BBSCoin](https://raw.githubusercontent.com/bbscoin/bbscoin/master/icons/bbscoin.png "BBSCoin")
 
 # BBSCoin(BBS)
 
