@@ -116,6 +116,7 @@ public:
   virtual std::vector<Crypto::Hash> getAlternativeBlockHashesByIndex(uint32_t blockIndex) const override;
   virtual std::vector<Crypto::Hash> getBlockHashesByTimestamps(uint64_t timestampBegin, size_t secondsCount) const override;
   virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const override;
+  virtual IBlockchainCache* findSegmentContainingBlock(const Crypto::Hash& blockHash) const;
 
 private:
   const Currency& currency;
@@ -152,7 +153,6 @@ private:
 
   uint64_t getAdjustedTime() const;
   void updateMainChainSet();
-  IBlockchainCache* findSegmentContainingBlock(const Crypto::Hash& blockHash) const;
   IBlockchainCache* findMainChainSegmentContainingBlock(const Crypto::Hash& blockHash) const;
   IBlockchainCache* findAlternativeSegmentContainingBlock(const Crypto::Hash& blockHash) const;
 

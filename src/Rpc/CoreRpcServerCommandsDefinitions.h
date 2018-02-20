@@ -761,12 +761,24 @@ struct TransactionOutputRecord {
   }
 };
 
+struct TransactionInputRecord {
+    uint64_t amount;
+    Crypto::Hash transactionHash;
+    std::vector<Crypto::PublicKey> publicKeys;
+
+    void serialize(ISerializer &s) {
+      KV_MEMBER(amount)
+      KV_MEMBER(transactionHash)
+      KV_MEMBER(publicKeys)
+    }
+};
+
 struct TransactionRecord {
   Crypto::Hash hash;
   Crypto::PublicKey publicKey; 
   std::vector<std::vector<Crypto::Signature>> signatures;
   uint64_t fee;
-  std::vector<TransactionInputDetails> inputs;
+  std::vector<TransactionInputRecord> inputs;
   std::vector<TransactionOutputRecord> outputs;
 
   void serialize(ISerializer &s) {

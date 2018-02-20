@@ -26,7 +26,7 @@
 #include "CryptoNoteCore/Core.h"
 #include "CryptoNoteCore/Miner.h"
 #include "CryptoNoteCore/TransactionExtra.h"
-
+#include "CryptoNoteCore/CryptoNoteFormatUtils.h"
 #include "CryptoNoteProtocol/CryptoNoteProtocolHandlerCommon.h"
 
 #include "P2p/NetNode.h"
@@ -1020,6 +1020,7 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
   assert(cachedBlock.getBlockIndex() == req.height);
 
   BlockDetails blockDetails = m_core.getBlockDetails(cachedBlock.getBlockHash());;
+  IBlockchainCache* cache =  m_core.findSegmentContainingBlock(blockDetails.hash);
 
   res.index = blockDetails.index;
   res.hash = blockDetails.hash;
@@ -1034,7 +1035,27 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
     txRecord.publicKey = txDetails.extra.publicKey;
     txRecord.fee = txDetails.fee;
 
-    txRecord.inputs = txDetails.inputs;
+    // Create inputs
+    for (const TransactionInputDetails txInputDetails : txDetails.inputs) {
+      TransactionInputRecord txInputRecord;
+      if (txInputDetails.type() == typeid(BaseInputDetails)) {
+        txInputRecord.amount = boost::get<BaseInputDetails>(txInputDetails).amount;
+        // txInputRecord.keyImage = boost::value_initialized<Crypto::KeyImage>();
+      } else if (txInputDetails.type() == typeid(KeyInputDetails)) {
+        txInputRecord.transactionHash = boost::get<KeyInputDetails>(txInputDetails).output.transactionHash;
+        
+        KeyInput keyInput = boost::get<KeyInputDetails>(txInputDetails).input;
+        txInputRecord.amount = keyInput.amount;
+
+        // Find out keys for output
+        std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(keyInput.outputIndexes);
+        std::vector<Crypto::PublicKey> publicKeys;
+        publicKeys.reserve(globalIndexes.size());
+        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, blockDetails.index, {globalIndexes.data(), globalIndexes.size()}, publicKeys);
+        txInputRecord.publicKeys = publicKeys;
+      }
+      txRecord.inputs.push_back(txInputRecord);
+    }
 
     // Create outputs
     for (const TransactionOutputDetails txOutputDetails : txDetails.outputs) {
@@ -1048,7 +1069,6 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
 
     res.transactions.push_back(txRecord);
   }
-
 
   return true;
 }
