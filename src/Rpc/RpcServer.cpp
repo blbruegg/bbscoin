@@ -1049,10 +1049,10 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
 
         // Find out keys for output
         std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(keyInput.outputIndexes);
-        std::vector<Crypto::PublicKey> publicKeys;
-        publicKeys.reserve(globalIndexes.size());
-        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, blockDetails.index, {globalIndexes.data(), globalIndexes.size()}, publicKeys);
-        txInputRecord.publicKeys = publicKeys;
+        std::vector<Crypto::PublicKey> keys;
+        keys.reserve(globalIndexes.size());
+        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, blockDetails.index, {globalIndexes.data(), globalIndexes.size()}, keys);
+        txInputRecord.keys = keys;
       }
       txRecord.inputs.push_back(txInputRecord);
     }
