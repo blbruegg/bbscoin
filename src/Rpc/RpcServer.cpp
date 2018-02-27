@@ -1040,8 +1040,9 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
     for (const TransactionInputDetails txInputDetails : txDetails.inputs) {
       TransactionInputRecord txInputRecord;
       if (txInputDetails.type() == typeid(BaseInputDetails)) {
+        txInputRecord.transactionHash = {};
         txInputRecord.amount = boost::get<BaseInputDetails>(txInputDetails).amount;
-        // txInputRecord.keyImage = boost::value_initialized<Crypto::KeyImage>();
+
       } else if (txInputDetails.type() == typeid(KeyInputDetails)) {
         txInputRecord.transactionHash = boost::get<KeyInputDetails>(txInputDetails).output.transactionHash;
         
