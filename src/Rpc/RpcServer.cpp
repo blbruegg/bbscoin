@@ -1040,21 +1040,16 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
     for (const TransactionInputDetails txInputDetails : txDetails.inputs) {
       TransactionInputRecord txInputRecord;
       if (txInputDetails.type() == typeid(BaseInputDetails)) {
-        txInputRecord.transactionHash = {};
         txInputRecord.amount = boost::get<BaseInputDetails>(txInputDetails).amount;
-
+        txInputRecord.keyImage = {};
       } else if (txInputDetails.type() == typeid(KeyInputDetails)) {
-        txInputRecord.transactionHash = boost::get<KeyInputDetails>(txInputDetails).output.transactionHash;
-        
         KeyInput keyInput = boost::get<KeyInputDetails>(txInputDetails).input;
         txInputRecord.amount = keyInput.amount;
+        txInputRecord.keyImage = keyInput.keyImage;
 
         // Find out keys for output
         std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(keyInput.outputIndexes);
-        std::vector<Crypto::PublicKey> keys;
-        keys.reserve(globalIndexes.size());
-        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, blockDetails.index, {globalIndexes.data(), globalIndexes.size()}, keys);
-        txInputRecord.keys = keys;
+        txInputRecord.globalIndexes = globalIndexes;
       }
       txRecord.inputs.push_back(txInputRecord);
     }
@@ -1065,6 +1060,7 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
         TransactionOutputRecord txOutputRecord;
         txOutputRecord.amount = txOutputDetails.output.amount;
         txOutputRecord.key = boost::get<KeyOutput>(txOutputDetails.output.target).key;
+        txOutputRecord.globalIndex = txOutputDetails.globalIndex;
         txRecord.outputs.push_back(txOutputRecord);
       }
     }

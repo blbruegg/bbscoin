@@ -754,22 +754,24 @@ struct COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES {
 struct TransactionOutputRecord {
   uint64_t amount;
   Crypto::PublicKey key;
+  uint64_t globalIndex;
 
   void serialize(ISerializer &s) {
     KV_MEMBER(amount)
     KV_MEMBER(key)
+    KV_MEMBER(globalIndex)
   }
 };
 
 struct TransactionInputRecord {
     uint64_t amount;
-    Crypto::Hash transactionHash;
-    std::vector<Crypto::PublicKey> keys;
+    Crypto::KeyImage keyImage;
+    std::vector<uint32_t> globalIndexes;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(amount)
-      KV_MEMBER(transactionHash)
-      KV_MEMBER(keys)
+      KV_MEMBER(keyImage)
+      KV_MEMBER(globalIndexes)
     }
 };
 
