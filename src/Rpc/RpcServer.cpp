@@ -192,7 +192,8 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
       { "getlastblockheader", { makeMemberMethod(&RpcServer::on_get_last_block_header), false } },
       { "getblockheaderbyhash", { makeMemberMethod(&RpcServer::on_get_block_header_by_hash), false } },
       { "getblockheaderbyheight", { makeMemberMethod(&RpcServer::on_get_block_header_by_height), false } },
-      { "on_get_txs_by_height", { makeMemberMethod(&RpcServer::on_get_txs_by_height), false } }
+      { "on_get_txs_by_height", { makeMemberMethod(&RpcServer::on_get_txs_by_height), false } },
+      { "get_random_outs", { makeMemberMethod(&RpcServer::on_get_random_outs_json), false } }
     };
 
     auto it = jsonRpcHandlers.find(jsonRequest.getMethod());
@@ -340,6 +341,27 @@ bool RpcServer::on_get_random_outs(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOU
   });
   std::string s = ss.str();
   logger(TRACE) << "COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS: " << ENDL << s;
+  res.status = CORE_RPC_STATUS_OK;
+  return true;
+}
+
+bool RpcServer::on_get_random_outs_json(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request_json& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::response_json& res) {
+  res.status = "Failed";
+
+  for (uint64_t amount : req.amounts) {
+    std::vector<uint32_t> globalIndexes;
+    std::vector<Crypto::PublicKey> publicKeys;
+    if (!m_core.getRandomOutputs(amount, static_cast<uint16_t>(req.outputCount), globalIndexes, publicKeys)) {
+      return true;
+    }
+
+    assert(globalIndexes.size() == publicKeys.size());
+    res.outputs.emplace_back(COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount_json{amount, {}});
+    for (size_t i = 0; i < globalIndexes.size(); ++i) {
+      res.outputs.back().outputs.push_back({globalIndexes[i], publicKeys[i]});
+    }
+  }
+
   res.status = CORE_RPC_STATUS_OK;
   return true;
 }
