@@ -183,12 +183,32 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request {
   }
 };
 
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request_json {
+  std::vector<uint64_t> amounts;
+  uint16_t outputCount;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(amounts)
+    KV_MEMBER(outputCount)
+  }
+};
+
 #pragma pack(push, 1)
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry {
   uint32_t global_amount_index;
   Crypto::PublicKey out_key;
 };
 #pragma pack(pop)
+
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry_json {
+  uint32_t globalIndex;
+  Crypto::PublicKey key;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(globalIndex)
+    KV_MEMBER(key)
+  }
+};
 
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount {
   uint64_t amount;
@@ -197,6 +217,16 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount {
   void serialize(ISerializer &s) {
     KV_MEMBER(amount)
     serializeAsBinary(outs, "outs", s);
+  }
+};
+
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount_json {
+  uint64_t amount;
+  std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry_json> outputs;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(amount)
+    KV_MEMBER(outputs)
   }
 };
 
@@ -210,12 +240,26 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response {
   }
 };
 
+struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response_json {
+  std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount_json> outputs;
+  std::string status;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(outputs);
+    KV_MEMBER(status)
+  }
+};
+
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS {
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request request;
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request_json request_json;
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response response;
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response_json response_json;
 
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry out_entry;
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry_json out_entry_json;
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount outs_for_amount;
+  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount_json outs_for_amount_json;
 };
 
 //-----------------------------------------------
