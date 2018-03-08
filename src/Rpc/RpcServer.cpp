@@ -1057,6 +1057,7 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
     txRecord.publicKey = txDetails.extra.publicKey;
     txRecord.fee = txDetails.fee;
     txRecord.timestamp = txDetails.timestamp;
+    txRecord.unlockTime = txDetails.unlockTime;
 
     // Create inputs
     for (const TransactionInputDetails txInputDetails : txDetails.inputs) {
