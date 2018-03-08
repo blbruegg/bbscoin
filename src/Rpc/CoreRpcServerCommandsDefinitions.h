@@ -825,6 +825,7 @@ struct TransactionRecord {
   std::vector<std::vector<Crypto::Signature>> signatures;
   uint64_t fee;
   uint64_t timestamp;
+  uint64_t unlockTime;
   std::vector<TransactionInputRecord> inputs;
   std::vector<TransactionOutputRecord> outputs;
 
@@ -834,6 +835,7 @@ struct TransactionRecord {
     KV_MEMBER(signatures)
     KV_MEMBER(fee)
     KV_MEMBER(timestamp)
+    KV_MEMBER(unlockTime)
     KV_MEMBER(inputs)
     KV_MEMBER(outputs)
   }
