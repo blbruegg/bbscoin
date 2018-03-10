@@ -193,6 +193,7 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
       { "getblockheaderbyhash", { makeMemberMethod(&RpcServer::on_get_block_header_by_hash), false } },
       { "getblockheaderbyheight", { makeMemberMethod(&RpcServer::on_get_block_header_by_height), false } },
       { "on_get_txs_by_height", { makeMemberMethod(&RpcServer::on_get_txs_by_height), false } },
+      { "on_get_txs_pool", { makeMemberMethod(&RpcServer::on_get_txs_pool), false } },
       { "get_random_outs", { makeMemberMethod(&RpcServer::on_get_random_outs_json), false } }
     };
 
@@ -1042,7 +1043,7 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
   assert(cachedBlock.getBlockIndex() == req.height);
 
   BlockDetails blockDetails = m_core.getBlockDetails(cachedBlock.getBlockHash());;
-  IBlockchainCache* cache =  m_core.findSegmentContainingBlock(blockDetails.hash);
+  IBlockchainCache* cache =  m_core.getCache();
 
   res.index = blockDetails.index;
   res.hash = blockDetails.hash;
@@ -1065,16 +1066,31 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
       if (txInputDetails.type() == typeid(BaseInputDetails)) {
         txInputRecord.amount = boost::get<BaseInputDetails>(txInputDetails).amount;
         txInputRecord.keyImage = {};
+        txInputRecord.txHash = {};
+
       } else if (txInputDetails.type() == typeid(KeyInputDetails)) {
-        KeyInput keyInput = boost::get<KeyInputDetails>(txInputDetails).input;
+        KeyInputDetails keyInputDetails = boost::get<KeyInputDetails>(txInputDetails);
+        KeyInput keyInput = keyInputDetails.input;
         txInputRecord.amount = keyInput.amount;
         txInputRecord.keyImage = keyInput.keyImage;
 
+        // Set txHash to empty if the output is from a coinbase
+        Crypto::Hash txContainsThisInputAsOutput = keyInputDetails.output.transactionHash;
+        TransactionDetails depositTx = m_core.getTransactionDetails(txContainsThisInputAsOutput);
+        if (depositTx.fee == 0 && depositTx.inputs.size() == 1 && depositTx.inputs[0].type() == typeid(BaseInputDetails)) {
+          txInputRecord.txHash = {};
+        } else {
+          txInputRecord.txHash = keyInputDetails.output.transactionHash;
+        }
+
         // Find out keys for output
         std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(keyInput.outputIndexes);
-        txInputRecord.globalIndexes = globalIndexes;
+        std::vector<Crypto::PublicKey> publicKeys;
+        publicKeys.reserve(globalIndexes.size());
+        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, blockDetails.index, {globalIndexes.data(), globalIndexes.size()}, publicKeys);
+        txInputRecord.keys = publicKeys;
       }
-      txRecord.inputs.push_back(txInputRecord);
+      txRecord.inputs.push_back(std::move(txInputRecord));
     }
 
     // Create outputs
@@ -1084,11 +1100,57 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
         txOutputRecord.amount = txOutputDetails.output.amount;
         txOutputRecord.key = boost::get<KeyOutput>(txOutputDetails.output.target).key;
         txOutputRecord.globalIndex = txOutputDetails.globalIndex;
-        txRecord.outputs.push_back(txOutputRecord);
+        txRecord.outputs.push_back(std::move(txOutputRecord));
       }
     }
 
-    res.transactions.push_back(txRecord);
+    res.transactions.push_back(std::move(txRecord));
+  }
+
+  return true;
+}
+
+bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAND_RPC_TXS_POOL::response& res) {
+  auto pool = m_core.getPoolTransactions();
+  IBlockchainCache* cache =  m_core.getCache();
+
+  res.status = CORE_RPC_STATUS_OK;
+
+  for (const Transaction tx : pool) {
+    uint64_t amount_in = getInputAmount(tx);
+    uint64_t amount_out = getOutputAmount(tx);
+
+    PoolTransactionRecord txRecord;
+    txRecord.hash = getObjectHash(tx);
+    txRecord.publicKey = getTransactionPublicKeyFromExtra(tx.extra);
+    txRecord.fee = amount_in - amount_out;
+    txRecord.unlockTime = tx.unlockTime;
+
+    for (const TransactionInput input : tx.inputs) {
+      PoolTransactionInputRecord txInputRecord;
+      if (input.type() == typeid(KeyInput)) {
+        KeyInput keyInput = boost::get<KeyInput>(input);
+        txInputRecord.amount = keyInput.amount;
+        txInputRecord.keyImage = keyInput.keyImage;
+
+        // Find out keys for output
+        std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(keyInput.outputIndexes);
+        txInputRecord.globalIndexes = globalIndexes;
+      }
+      txRecord.inputs.push_back(std::move(txInputRecord));
+    }
+
+    for (const TransactionOutput output : tx.outputs) {
+      if (output.target.type() == typeid(KeyOutput)) {
+        PoolTransactionOutputRecord txOutputRecord;
+        KeyOutput keyOutput = boost::get<KeyOutput>(output.target);
+        txOutputRecord.amount = output.amount;
+        txOutputRecord.key = keyOutput.key;
+        txRecord.outputs.push_back(std::move(txOutputRecord));
+      }
+    }
+
+    res.transactions.push_back(std::move(txRecord));
   }
 
   return true;

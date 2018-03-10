@@ -117,6 +117,7 @@ public:
   virtual std::vector<Crypto::Hash> getBlockHashesByTimestamps(uint64_t timestampBegin, size_t secondsCount) const override;
   virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const override;
   virtual IBlockchainCache* findSegmentContainingBlock(const Crypto::Hash& blockHash) const;
+  virtual IBlockchainCache* getCache() const;
 
 private:
   const Currency& currency;
