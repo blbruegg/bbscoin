@@ -1543,6 +1543,10 @@ void Core::updateMainChainSet() {
   } while (chainPtr != nullptr);
 }
 
+IBlockchainCache* Core::getCache() const {
+  return chainsLeaves[0];
+}
+
 IBlockchainCache* Core::findSegmentContainingBlock(const Crypto::Hash& blockHash) const {
   assert(chainsLeaves.size() > 0);
 

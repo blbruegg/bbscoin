@@ -809,20 +809,21 @@ struct TransactionOutputRecord {
 
 struct TransactionInputRecord {
     uint64_t amount;
+    Crypto::Hash txHash;
     Crypto::KeyImage keyImage;
-    std::vector<uint32_t> globalIndexes;
+    std::vector<Crypto::PublicKey> keys;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(amount)
+      KV_MEMBER(txHash)
       KV_MEMBER(keyImage)
-      KV_MEMBER(globalIndexes)
+      KV_MEMBER(keys)
     }
 };
 
 struct TransactionRecord {
   Crypto::Hash hash;
   Crypto::PublicKey publicKey; 
-  std::vector<std::vector<Crypto::Signature>> signatures;
   uint64_t fee;
   uint64_t timestamp;
   uint64_t unlockTime;
@@ -832,7 +833,6 @@ struct TransactionRecord {
   void serialize(ISerializer &s) {
     KV_MEMBER(hash)
     KV_MEMBER(publicKey)
-    KV_MEMBER(signatures)
     KV_MEMBER(fee)
     KV_MEMBER(timestamp)
     KV_MEMBER(unlockTime)
@@ -849,7 +849,7 @@ struct COMMAND_RPC_TXS_BY_HEIGHT {
       KV_MEMBER(height)
     }
   };
-
+  
   struct response {
     std::string status;
     uint32_t index = 0;
@@ -866,6 +866,63 @@ struct COMMAND_RPC_TXS_BY_HEIGHT {
       KV_MEMBER(majorVersion)
       KV_MEMBER(minorVersion)
       KV_MEMBER(timestamp)
+      KV_MEMBER(transactions)
+    }
+  };
+};
+
+struct PoolTransactionInputRecord {
+    uint64_t amount;
+    Crypto::KeyImage keyImage;
+    std::vector<uint32_t> globalIndexes;
+
+    void serialize(ISerializer &s) {
+      KV_MEMBER(amount)
+      KV_MEMBER(keyImage)
+      KV_MEMBER(globalIndexes)
+    }
+};
+
+struct PoolTransactionOutputRecord {
+  uint64_t amount;
+  Crypto::PublicKey key;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(amount)
+    KV_MEMBER(key)
+  }
+};
+
+struct PoolTransactionRecord {
+  Crypto::Hash hash;
+  Crypto::PublicKey publicKey; 
+  uint64_t fee;
+  uint64_t unlockTime;
+  std::vector<PoolTransactionInputRecord> inputs;
+  std::vector<PoolTransactionOutputRecord> outputs;
+
+  void serialize(ISerializer &s) {
+    KV_MEMBER(hash)
+    KV_MEMBER(publicKey)
+    KV_MEMBER(fee)
+    KV_MEMBER(unlockTime)
+    KV_MEMBER(inputs)
+    KV_MEMBER(outputs)
+  }
+};
+
+struct COMMAND_RPC_TXS_POOL {
+  struct request {
+    void serialize(ISerializer& s) {
+    }
+  };
+  
+  struct response {
+    std::string status;
+    std::vector<PoolTransactionRecord> transactions;
+
+    void serialize(ISerializer& s) {
+      KV_MEMBER(status)
       KV_MEMBER(transactions)
     }
   };
