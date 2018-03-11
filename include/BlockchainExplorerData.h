@@ -39,11 +39,6 @@ struct TransactionOutputDetails {
   uint64_t globalIndex;
 };
 
-struct TransactionOutputReferenceDetails {
-  Crypto::Hash transactionHash;
-  size_t number;
-};
-
 struct BaseInputDetails {
   BaseInput input;
   uint64_t amount;
@@ -52,9 +47,7 @@ struct BaseInputDetails {
 struct KeyInputDetails {
   KeyInput input;
   uint64_t mixin;
-  TransactionOutputReferenceDetails output;
 };
-
 
 typedef boost::variant<BaseInputDetails, KeyInputDetails> TransactionInputDetails;
 

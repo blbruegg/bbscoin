@@ -1066,7 +1066,6 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
       if (txInputDetails.type() == typeid(BaseInputDetails)) {
         txInputRecord.amount = boost::get<BaseInputDetails>(txInputDetails).amount;
         txInputRecord.keyImage = {};
-        txInputRecord.txHash = {};
 
       } else if (txInputDetails.type() == typeid(KeyInputDetails)) {
         KeyInputDetails keyInputDetails = boost::get<KeyInputDetails>(txInputDetails);
@@ -1074,21 +1073,14 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
         txInputRecord.amount = keyInput.amount;
         txInputRecord.keyImage = keyInput.keyImage;
 
-        // Set txHash to empty if the output is from a coinbase
-        Crypto::Hash txContainsThisInputAsOutput = keyInputDetails.output.transactionHash;
-        TransactionDetails depositTx = m_core.getTransactionDetails(txContainsThisInputAsOutput);
-        if (depositTx.fee == 0 && depositTx.inputs.size() == 1 && depositTx.inputs[0].type() == typeid(BaseInputDetails)) {
-          txInputRecord.txHash = {};
-        } else {
-          txInputRecord.txHash = keyInputDetails.output.transactionHash;
-        }
-
         // Find out keys for output
         std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(keyInput.outputIndexes);
         std::vector<Crypto::PublicKey> publicKeys;
         publicKeys.reserve(globalIndexes.size());
-        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, blockDetails.index, {globalIndexes.data(), globalIndexes.size()}, publicKeys);
-        txInputRecord.keys = publicKeys;
+        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, cache->getTopBlockIndex(), {globalIndexes.data(), globalIndexes.size()}, publicKeys);
+        if (result == ExtractOutputKeysResult::SUCCESS) {
+          txInputRecord.keys = publicKeys;
+        }
       }
       txRecord.inputs.push_back(std::move(txInputRecord));
     }

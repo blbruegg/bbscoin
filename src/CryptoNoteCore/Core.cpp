@@ -2078,16 +2078,7 @@ TransactionDetails Core::getTransactionDetails(const Crypto::Hash& transactionHa
     } else if (transaction->getInputType(i) == TransactionTypes::InputType::Key) {
       KeyInputDetails txInToKeyDetails;
       txInToKeyDetails.input = boost::get<KeyInput>(rawTransaction.inputs[i]);
-      std::vector<std::pair<Crypto::Hash, size_t>> outputReferences;
-      outputReferences.reserve(txInToKeyDetails.input.outputIndexes.size());
-      std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(txInToKeyDetails.input.outputIndexes);
-      ExtractOutputKeysResult result = segment->extractKeyOtputReferences(txInToKeyDetails.input.amount, { globalIndexes.data(), globalIndexes.size() }, outputReferences);
-      assert(result == ExtractOutputKeysResult::SUCCESS);
-      assert(txInToKeyDetails.input.outputIndexes.size() == outputReferences.size());
-
       txInToKeyDetails.mixin = txInToKeyDetails.input.outputIndexes.size();
-      txInToKeyDetails.output.number = outputReferences.back().second;
-      txInToKeyDetails.output.transactionHash = outputReferences.back().first;
       txInDetails = txInToKeyDetails;
     }
 
