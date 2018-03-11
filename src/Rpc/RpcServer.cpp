@@ -1111,11 +1111,17 @@ bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAN
   for (const Transaction tx : pool) {
     uint64_t amount_in = getInputAmount(tx);
     uint64_t amount_out = getOutputAmount(tx);
+    uint64_t fee = amount_in - amount_out;
+
+    // We don't care about fusion tx
+    if (fee == 0 && m_core.getCurrency().isFusionTransaction(tx)) {
+      continue;
+    }
 
     PoolTransactionRecord txRecord;
     txRecord.hash = getObjectHash(tx);
     txRecord.publicKey = getTransactionPublicKeyFromExtra(tx.extra);
-    txRecord.fee = amount_in - amount_out;
+    txRecord.fee = fee;
     txRecord.unlockTime = tx.unlockTime;
 
     for (const TransactionInput input : tx.inputs) {
@@ -1127,7 +1133,12 @@ bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAN
 
         // Find out keys for output
         std::vector<uint32_t> globalIndexes = relativeOutputOffsetsToAbsolute(keyInput.outputIndexes);
-        txInputRecord.globalIndexes = globalIndexes;
+        std::vector<Crypto::PublicKey> publicKeys;
+        publicKeys.reserve(globalIndexes.size());
+        ExtractOutputKeysResult result = cache->extractKeyOutputKeys(keyInput.amount, cache->getTopBlockIndex(), {globalIndexes.data(), globalIndexes.size()}, publicKeys);
+        if (result == ExtractOutputKeysResult::SUCCESS) {
+          txInputRecord.keys = publicKeys;
+        }
       }
       txRecord.inputs.push_back(std::move(txInputRecord));
     }

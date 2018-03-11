@@ -872,12 +872,12 @@ struct COMMAND_RPC_TXS_BY_HEIGHT {
 struct PoolTransactionInputRecord {
     uint64_t amount;
     Crypto::KeyImage keyImage;
-    std::vector<uint32_t> globalIndexes;
+    std::vector<Crypto::PublicKey> keys;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(amount)
       KV_MEMBER(keyImage)
-      KV_MEMBER(globalIndexes)
+      KV_MEMBER(keys)
     }
 };
 
