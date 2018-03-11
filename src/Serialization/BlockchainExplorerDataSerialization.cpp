@@ -81,11 +81,6 @@ void serialize(TransactionOutputDetails& output, ISerializer& serializer) {
   serializer(output.globalIndex, "globalIndex");
 }
 
-void serialize(TransactionOutputReferenceDetails& outputReference, ISerializer& serializer) {
-  serializePod(outputReference.transactionHash, "transactionHash", serializer);
-  serializer(outputReference.number, "number");
-}
-
 void serialize(BaseInputDetails& inputBase, ISerializer& serializer) {
   serializer(inputBase.input, "input");
   serializer(inputBase.amount, "amount");
@@ -94,7 +89,6 @@ void serialize(BaseInputDetails& inputBase, ISerializer& serializer) {
 void serialize(KeyInputDetails& inputToKey, ISerializer& serializer) {
   serializer(inputToKey.input, "input");
   serializer(inputToKey.mixin, "mixin");
-  serializer(inputToKey.output, "output");
 }
 
 void serialize(TransactionInputDetails& input, ISerializer& serializer) {

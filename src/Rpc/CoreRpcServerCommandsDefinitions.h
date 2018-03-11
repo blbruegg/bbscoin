@@ -809,13 +809,11 @@ struct TransactionOutputRecord {
 
 struct TransactionInputRecord {
     uint64_t amount;
-    Crypto::Hash txHash;
     Crypto::KeyImage keyImage;
     std::vector<Crypto::PublicKey> keys;
 
     void serialize(ISerializer &s) {
       KV_MEMBER(amount)
-      KV_MEMBER(txHash)
       KV_MEMBER(keyImage)
       KV_MEMBER(keys)
     }
