@@ -926,4 +926,21 @@ struct COMMAND_RPC_TXS_POOL {
   };
 };
 
+struct COMMAND_RPC_GET_MAX_TX_SIZE {
+  struct request {
+    void serialize(ISerializer& s) {
+    }
+  };
+  
+  struct response {
+    std::string status;
+    size_t size;
+
+    void serialize(ISerializer& s) {
+      KV_MEMBER(status)
+      KV_MEMBER(size)
+    }
+  };
+};
+
 }

@@ -192,9 +192,10 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
       { "getlastblockheader", { makeMemberMethod(&RpcServer::on_get_last_block_header), false } },
       { "getblockheaderbyhash", { makeMemberMethod(&RpcServer::on_get_block_header_by_hash), false } },
       { "getblockheaderbyheight", { makeMemberMethod(&RpcServer::on_get_block_header_by_height), false } },
-      { "on_get_txs_by_height", { makeMemberMethod(&RpcServer::on_get_txs_by_height), false } },
-      { "on_get_txs_pool", { makeMemberMethod(&RpcServer::on_get_txs_pool), false } },
-      { "get_random_outs", { makeMemberMethod(&RpcServer::on_get_random_outs_json), false } }
+      { "get_txs_by_height", { makeMemberMethod(&RpcServer::on_get_txs_by_height), false } },
+      { "get_txs_pool", { makeMemberMethod(&RpcServer::on_get_txs_pool), false } },
+      { "get_random_outs", { makeMemberMethod(&RpcServer::on_get_random_outs_json), false } },
+      { "get_maximum_tx_allowed_size", { makeMemberMethod(&RpcServer::on_get_maximum_tx_allowed_size), false } }
     };
 
     auto it = jsonRpcHandlers.find(jsonRequest.getMethod());
@@ -1156,6 +1157,12 @@ bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAN
     res.transactions.push_back(std::move(txRecord));
   }
 
+  return true;
+}
+
+bool RpcServer::on_get_maximum_tx_allowed_size(const COMMAND_RPC_GET_MAX_TX_SIZE::request& req, COMMAND_RPC_GET_MAX_TX_SIZE::response& res) {
+  res.status = CORE_RPC_STATUS_OK;
+  res.size = m_core.getMaxTransactionAllowedSize();
   return true;
 }
 

@@ -211,6 +211,10 @@ Core::~Core() {
   contextGroup.wait();
 }
 
+size_t Core::getMaxTransactionAllowedSize() const {
+  return getMaximumTransactionAllowedSize(blockMedianSize, currency);
+}
+
 bool Core::addMessageQueue(MessageQueue<BlockchainMessage>& messageQueue) {
   return queueList.insert(messageQueue);
 }

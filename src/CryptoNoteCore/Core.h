@@ -118,6 +118,7 @@ public:
   virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const override;
   virtual IBlockchainCache* findSegmentContainingBlock(const Crypto::Hash& blockHash) const;
   virtual IBlockchainCache* getCache() const;
+  virtual size_t getMaxTransactionAllowedSize() const override;
 
 private:
   const Currency& currency;

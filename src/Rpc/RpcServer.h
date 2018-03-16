@@ -93,6 +93,7 @@ private:
   bool f_on_transactions_pool_json(const F_COMMAND_RPC_GET_POOL::request& req, F_COMMAND_RPC_GET_POOL::response& res);
   bool f_getMixin(const Transaction& transaction, uint64_t& mixin);
   bool on_get_random_outs_json(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request_json& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::response_json& res);
+  bool on_get_maximum_tx_allowed_size(const COMMAND_RPC_GET_MAX_TX_SIZE::request& req, COMMAND_RPC_GET_MAX_TX_SIZE::response& res);
 
   Logging::LoggerRef logger;
   Core& m_core;
