@@ -397,3 +397,7 @@ std::vector<Crypto::Hash> ICoreStub::getAlternativeBlockHashesByIndex(uint32_t b
 void ICoreStub::setPoolChangesResult(bool result) {
   poolChangesResult = result;
 }
+
+size_t ICoreStub::getMaxTransactionAllowedSize() const {
+  return 0;
+}
