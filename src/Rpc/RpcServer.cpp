@@ -1114,11 +1114,6 @@ bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAN
     uint64_t amount_out = getOutputAmount(tx);
     uint64_t fee = amount_in - amount_out;
 
-    // We don't care about fusion tx
-    if (fee == 0 && m_core.getCurrency().isFusionTransaction(tx)) {
-      continue;
-    }
-
     PoolTransactionRecord txRecord;
     txRecord.hash = getObjectHash(tx);
     txRecord.publicKey = getTransactionPublicKeyFromExtra(tx.extra);
