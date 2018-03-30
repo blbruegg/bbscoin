@@ -825,6 +825,7 @@ struct TransactionRecord {
   uint64_t fee;
   uint64_t timestamp;
   uint64_t unlockTime;
+  Crypto::Hash paymentId;
   std::vector<TransactionInputRecord> inputs;
   std::vector<TransactionOutputRecord> outputs;
 
@@ -834,6 +835,7 @@ struct TransactionRecord {
     KV_MEMBER(fee)
     KV_MEMBER(timestamp)
     KV_MEMBER(unlockTime)
+    KV_MEMBER(paymentId)
     KV_MEMBER(inputs)
     KV_MEMBER(outputs)
   }
@@ -896,6 +898,7 @@ struct PoolTransactionRecord {
   Crypto::PublicKey publicKey; 
   uint64_t fee;
   uint64_t unlockTime;
+  Crypto::Hash paymentId;
   std::vector<PoolTransactionInputRecord> inputs;
   std::vector<PoolTransactionOutputRecord> outputs;
 
@@ -904,6 +907,7 @@ struct PoolTransactionRecord {
     KV_MEMBER(publicKey)
     KV_MEMBER(fee)
     KV_MEMBER(unlockTime)
+    KV_MEMBER(paymentId)
     KV_MEMBER(inputs)
     KV_MEMBER(outputs)
   }
