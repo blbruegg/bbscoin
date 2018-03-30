@@ -1061,6 +1061,10 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
     txRecord.timestamp = txDetails.timestamp;
     txRecord.unlockTime = txDetails.unlockTime;
 
+    if (!getPaymentIdFromTxExtra(txDetails.extra.raw, txRecord.paymentId)) {
+      txRecord.paymentId = {};
+    }
+
     // Create inputs
     for (const TransactionInputDetails txInputDetails : txDetails.inputs) {
       TransactionInputRecord txInputRecord;
@@ -1119,6 +1123,10 @@ bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAN
     txRecord.publicKey = getTransactionPublicKeyFromExtra(tx.extra);
     txRecord.fee = fee;
     txRecord.unlockTime = tx.unlockTime;
+
+    if (!getPaymentIdFromTxExtra(tx.extra, txRecord.paymentId)) {
+      txRecord.paymentId = {};
+    }
 
     for (const TransactionInput input : tx.inputs) {
       PoolTransactionInputRecord txInputRecord;
