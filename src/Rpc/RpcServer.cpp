@@ -1061,7 +1061,7 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
     txRecord.timestamp = txDetails.timestamp;
     txRecord.unlockTime = txDetails.unlockTime;
 
-    if (!getPaymentIdFromTxExtra(txDetails.extra.raw, txRecord.paymentId)) {
+    if (!getPaymentIdFromTransactionExtraNonce(txDetails.extra.nonce, txRecord.paymentId)) {
       txRecord.paymentId = {};
     }
 
