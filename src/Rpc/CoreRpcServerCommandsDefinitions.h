@@ -915,7 +915,12 @@ struct PoolTransactionRecord {
 
 struct COMMAND_RPC_TXS_POOL {
   struct request {
+    bool excludeFusion = false;
+    std::vector<Crypto::Hash> excludeHashes;
+    
     void serialize(ISerializer& s) {
+      KV_MEMBER(excludeFusion)
+      KV_MEMBER(excludeHashes)
     }
   };
   

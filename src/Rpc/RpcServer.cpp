@@ -1108,12 +1108,16 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
 }
 
 bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAND_RPC_TXS_POOL::response& res) {
-  auto pool = m_core.getPoolTransactions();
+  auto pool = m_core.getPoolTransactions(req.excludeHashes);
   IBlockchainCache* cache =  m_core.getCache();
 
   res.status = CORE_RPC_STATUS_OK;
 
   for (const Transaction tx : pool) {
+    if (req.excludeFusion && m_core.getCurrency().isFusionTransaction(tx)) {
+      continue;
+    }
+
     uint64_t amount_in = getInputAmount(tx);
     uint64_t amount_out = getOutputAmount(tx);
     uint64_t fee = amount_in - amount_out;

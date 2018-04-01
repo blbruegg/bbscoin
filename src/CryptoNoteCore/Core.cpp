@@ -1171,12 +1171,22 @@ std::vector<BlockTemplate> Core::getAlternativeBlocks() const {
 }
 
 std::vector<Transaction> Core::getPoolTransactions() const {
+  std::vector<Crypto::Hash> excludeHashed;
+  return getPoolTransactions(excludeHashed);
+}
+
+std::vector<Transaction> Core::getPoolTransactions(std::vector<Crypto::Hash> excludeHashes) const {
   throwIfNotInitialized();
 
   std::vector<Transaction> transactions;
   auto hashes = transactionPool->getPoolTransactions();
-  std::transform(std::begin(hashes), std::end(hashes), std::back_inserter(transactions),
-                 [&](const CachedTransaction& tx) { return tx.getTransaction(); });
+
+  std::transform(std::begin(hashes), std::remove_if(std::begin(hashes), std::end(hashes), [&](const CachedTransaction& tx) { 
+      return std::find(std::begin(excludeHashes), std::end(excludeHashes), tx.getTransactionHash()) != std::end(excludeHashes); 
+    }),
+    std::back_inserter(transactions), [&](const CachedTransaction& tx) { return tx.getTransaction(); }
+  );
+
   return transactions;
 }
 
