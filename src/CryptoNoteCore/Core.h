@@ -105,6 +105,7 @@ public:
   virtual uint64_t getTotalGeneratedAmount() const override;
   virtual std::vector<BlockTemplate> getAlternativeBlocks() const override;
   virtual std::vector<Transaction> getPoolTransactions() const override;
+  virtual std::vector<Transaction> getPoolTransactions(std::vector<Crypto::Hash> excludeHashes) const override;
 
   const Currency& getCurrency() const;
 

@@ -30,6 +30,7 @@ public:
   virtual uint64_t getTotalGeneratedAmount() const = 0;
   virtual std::vector<BlockTemplate> getAlternativeBlocks() const = 0;
   virtual std::vector<Transaction> getPoolTransactions() const = 0;
+  virtual std::vector<Transaction> getPoolTransactions(std::vector<Crypto::Hash> excludedHashes) const = 0;
 };
 
 }
