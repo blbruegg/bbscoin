@@ -51,8 +51,14 @@ const uint64_t DEFAULT_DUST_THRESHOLD                        = uint64_t(100000);
 const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
 const size_t   DIFFICULTY_WINDOW                             = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
+const size_t   DIFFICULTY_WINDOW_V1                          = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
+const size_t   DIFFICULTY_WINDOW_V2                          = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
 const size_t   DIFFICULTY_CUT                                = 60;  // timestamps to cut after sorting
+const size_t   DIFFICULTY_CUT_V1                             = 60;
+const size_t   DIFFICULTY_CUT_V2                             = 60;
 const size_t   DIFFICULTY_LAG                                = 15;  // !!!
+const size_t   DIFFICULTY_LAG_V1                             = 15;
+const size_t   DIFFICULTY_LAG_V2                             = 15;
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
 const size_t   MAX_BLOCK_SIZE_INITIAL                        = 20 * 1024;
@@ -71,8 +77,8 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
-const uint32_t UPGRADE_HEIGHT_V2                             = 500000;
-const uint32_t UPGRADE_HEIGHT_V3                             = 500010;
+const uint32_t UPGRADE_HEIGHT_V2                             = 4294967294;
+const uint32_t UPGRADE_HEIGHT_V3                             = 4294967294;
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -125,7 +131,6 @@ const char* const SEED_NODES[] = {
   "104.224.176.92:11204",
   "207.148.71.221:11204" 
 };
-
 
 struct CheckpointData {
   uint32_t index;
