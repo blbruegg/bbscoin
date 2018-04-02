@@ -505,12 +505,12 @@ Difficulty Currency::nextDifficultyV2(
   const size_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V2;
 
   if (timestamps.size() > N) {
-    timestamps.resize(N);
-    cumulativeDifficulties.resize(N);
+    timestamps.resize(N + 1);
+    cumulativeDifficulties.resize(N + 1);
   }
   size_t n = timestamps.size();
   assert(n == cumulativeDifficulties.size());
-  assert(n <= N);
+  assert(n <= N + 1);
 
   if (n <= 1)
     return 1;
