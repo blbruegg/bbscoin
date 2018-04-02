@@ -74,8 +74,8 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
-    m_difficultyTarget = 15;
-    m_upgradeHeightV2 = 10;
+    m_difficultyTarget = 10;
+    m_upgradeHeightV2 = 100;
     m_upgradeHeightV3 = static_cast<uint32_t>(-1);
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
@@ -170,6 +170,14 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const {
     return m_upgradeHeightV3;
   } else {
     return static_cast<uint32_t>(-1);
+  }
+}
+
+uint64_t Currency::blockFutureTimeLimitByBlockVersion(uint8_t majorVersion) const {
+  if (majorVersion >= BLOCK_MAJOR_VERSION_2) {
+    return CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2;
+  } else {
+    return CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
   }
 }
 
@@ -432,15 +440,9 @@ bool Currency::parseAmount(const std::string& str, uint64_t& amount) const {
   return Common::fromString(strAmount, amount);
 }
 
-Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps,
-  std::vector<Difficulty> cumulativeDifficulties) const {
-
-  if (version >= BLOCK_MAJOR_VERSION_2) {
-  	  return nextDifficultyV2(version, blockIndex, timestamps, cumulativeDifficulties);
-  }
-
-  size_t c_difficultyWindow = difficultyWindowByBlockVersion(version);
-  size_t c_difficultyCut = difficultyCutByBlockVersion(version);
+Difficulty Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const {
+  size_t c_difficultyWindow = difficultyWindowByBlockVersion(BLOCK_MAJOR_VERSION_1);
+  size_t c_difficultyCut = difficultyCutByBlockVersion(BLOCK_MAJOR_VERSION_1);
 
   assert(c_difficultyWindow >= 2);
 
@@ -485,6 +487,14 @@ Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::v
   return (low + timeSpan - 1) / timeSpan;  // with version
 }
 
+Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const {
+  if (version >= BLOCK_MAJOR_VERSION_2) {
+  	  return nextDifficultyV2(version, blockIndex, timestamps, cumulativeDifficulties);
+  } else {
+  	  return nextDifficulty(timestamps, cumulativeDifficulties);
+  }
+}
+
 Difficulty Currency::nextDifficultyV2(
   uint8_t version, uint32_t blockIndex, 
   std::vector<uint64_t> timestamps,
@@ -502,7 +512,7 @@ Difficulty Currency::nextDifficultyV2(
   // N=45, 60, 70, 100, 140 for T=600, 240, 120, 90, and 60 respectively.
 
   const int64_t T = static_cast<int64_t>(m_difficultyTarget);
-  const size_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V2;
+  size_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V2;
 
   if (timestamps.size() > N) {
     timestamps.resize(N + 1);
@@ -515,7 +525,7 @@ Difficulty Currency::nextDifficultyV2(
   // If new coin, just "give away" first 5 blocks at low difficulty
   if ( n < 6 ) { return  1; }
   // If height "n" is from 6 to N, then reset N to n-1.
-  elseif (n < N+1) { N=n-1; } 
+  else if (n < N + 1) { N = n - 1; }
 
   // To get an average solvetime to within +/- ~0.1%, use an adjustment factor.
   const double_t adjust = 0.998;
@@ -682,7 +692,6 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   minedMoneyUnlockWindow(parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);
 
   timestampCheckWindow(parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW);
-  blockFutureTimeLimit(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT);
 
   moneySupply(parameters::MONEY_SUPPLY);
   emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);
