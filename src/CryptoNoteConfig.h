@@ -52,7 +52,7 @@ const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
 const size_t   DIFFICULTY_WINDOW                             = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
 const size_t   DIFFICULTY_WINDOW_V1                          = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
-const size_t   DIFFICULTY_WINDOW_V2                          = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
+const size_t   DIFFICULTY_WINDOW_V2                          = 60;
 const size_t   DIFFICULTY_CUT                                = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_CUT_V1                             = 60;
 const size_t   DIFFICULTY_CUT_V2                             = 60;
@@ -77,7 +77,7 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
-const uint32_t UPGRADE_HEIGHT_V2                             = 4294967294;
+const uint32_t UPGRADE_HEIGHT_V2                             = 60000;
 const uint32_t UPGRADE_HEIGHT_V3                             = 4294967294;
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
