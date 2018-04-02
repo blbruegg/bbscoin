@@ -512,8 +512,10 @@ Difficulty Currency::nextDifficultyV2(
   assert(n == cumulativeDifficulties.size());
   assert(n <= N + 1);
 
-  if (n <= 1)
-    return 1;
+  // If new coin, just "give away" first 5 blocks at low difficulty
+  if ( n < 6 ) { return  1; }
+  // If height "n" is from 6 to N, then reset N to n-1.
+  elseif (n < N+1) { N=n-1; } 
 
   // To get an average solvetime to within +/- ~0.1%, use an adjustment factor.
   const double_t adjust = 0.998;
@@ -724,7 +726,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   blockIndexesFileName(parameters::CRYPTONOTE_BLOCKINDEXES_FILENAME);
   txPoolFileName(parameters::CRYPTONOTE_POOLDATA_FILENAME);
 
-    isBlockexplorer(false);
+  isBlockexplorer(false);
   testnet(false);
 }
 
