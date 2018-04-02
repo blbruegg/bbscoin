@@ -506,7 +506,7 @@ Difficulty Currency::nextDifficultyV2(
 
   if (timestamps.size() > N) {
     timestamps.resize(N);
-    cumulativeDifficulties.resize(N1);
+    cumulativeDifficulties.resize(N);
   }
   size_t n = timestamps.size();
   assert(n == cumulativeDifficulties.size());
