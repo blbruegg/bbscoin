@@ -512,10 +512,8 @@ Difficulty Currency::nextDifficultyV2(
   assert(n == cumulativeDifficulties.size());
   assert(n <= N);
 
-  // If new coin, just "give away" first 5 blocks at low difficulty
-  if ( n < 6 ) { return  1; }
-  // If height is from 6 to N, then reset N to n-1.
-  else if (n < N+1) { N=n-1; } 
+  if (n <= 1)
+    return 1;
 
   // To get an average solvetime to within +/- ~0.1%, use an adjustment factor.
   const double_t adjust = 0.998;
@@ -529,7 +527,7 @@ Difficulty Currency::nextDifficultyV2(
   // Loop through N most recent blocks.
   for (int64_t i = 1; i <= N; i++) {
     solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
-    solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-7 * T)));
+    solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-6 * T)));
     difficulty = cumulativeDifficulties[i] - cumulativeDifficulties[i - 1];
     LWMA += solveTime * i / k;
     sum_inverse_D += 1 / static_cast<double_t>(difficulty);
