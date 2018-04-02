@@ -1380,8 +1380,14 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
     }
   }
 
-  if (block.timestamp > getAdjustedTime() + currency.blockFutureTimeLimit()) {
-    return error::BlockValidationError::TIMESTAMP_TOO_FAR_IN_FUTURE;
+  if (block.majorVersion >= BLOCK_MAJOR_VERSION_2) {
+    if (block.timestamp > getAdjustedTime() + CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2) {
+      return error::BlockValidationError::TIMESTAMP_TOO_FAR_IN_FUTURE;
+    }
+  } else {
+    if (block.timestamp > getAdjustedTime() + currency.blockFutureTimeLimit()) {
+      return error::BlockValidationError::TIMESTAMP_TOO_FAR_IN_FUTURE;
+    }
   }
 
   auto timestamps = cache->getLastTimestamps(currency.timestampCheckWindow(), previousBlockIndex, addGenesisBlock);

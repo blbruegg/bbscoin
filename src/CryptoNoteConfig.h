@@ -49,10 +49,11 @@ const uint64_t MINIMUM_FEE                                   = uint64_t(100000);
 const uint64_t DEFAULT_DUST_THRESHOLD                        = uint64_t(100000);
 
 const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
+const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2         = 7 * DIFFICULTY_TARGET;
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
 const size_t   DIFFICULTY_WINDOW                             = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
 const size_t   DIFFICULTY_WINDOW_V1                          = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
-const size_t   DIFFICULTY_WINDOW_V2                          = 60;
+const size_t   DIFFICULTY_WINDOW_V2                          = 70;
 const size_t   DIFFICULTY_CUT                                = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_CUT_V1                             = 60;
 const size_t   DIFFICULTY_CUT_V2                             = 60;
