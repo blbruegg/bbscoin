@@ -496,21 +496,21 @@ Difficulty Currency::nextDifficultyV2(
   // MIT license http://www.opensource.org/licenses/mit-license.php.
   // This is an improved version of Tom Harding's (Deger8) "WT-144"  
   // Karbowanec, Masari, Bitcoin Gold, and Bitcoin Cash have contributed.
-  // See https://github.com/zawy12/difficulty-algorithms/issues/1 for other algos.
+  // See https://github.com/zawy12/difficulty-algorithms/issues/3 for other algos.
   // Do not use "if solvetime < 0 then solvetime = 1" which allows a catastrophic exploit.
   // T= target_solvetime;
-  // N = int(45 * (600 / T) ^ 0.3));
+  // N=45, 60, 70, 100, 140 for T=600, 240, 120, 90, and 60 respectively.
 
   const int64_t T = static_cast<int64_t>(m_difficultyTarget);
   const size_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V2;
 
-  if (timestamps.size() > N + 1) {
-    timestamps.resize(N + 1);
-    cumulativeDifficulties.resize(N + 1);
+  if (timestamps.size() > N) {
+    timestamps.resize(N);
+    cumulativeDifficulties.resize(N1);
   }
   size_t n = timestamps.size();
   assert(n == cumulativeDifficulties.size());
-  assert(n <= N + 1);
+  assert(n <= N);
   if (n <= 1)
     return 1;
 
