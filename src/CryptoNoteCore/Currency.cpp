@@ -511,8 +511,11 @@ Difficulty Currency::nextDifficultyV2(
   size_t n = timestamps.size();
   assert(n == cumulativeDifficulties.size());
   assert(n <= N);
-  if (n <= 1)
-    return 1;
+
+  // If new coin, just "give away" first 5 blocks at low difficulty
+  if ( n < 6 ) { return  1; }
+  // If height is from 6 to N, then reset N to n-1.
+  else if (n < N+1) { N=n-1; } 
 
   // To get an average solvetime to within +/- ~0.1%, use an adjustment factor.
   const double_t adjust = 0.998;
