@@ -9,7 +9,7 @@ This repo contains daemons for blockchain, payment and wallet service.
 ### On Ubuntu 16.04
 
 ```
-sudo apt-get install build-essential libboost-all-dev git
+sudo apt-get install build-essential libboost-all-dev git cmake
 git clone https://github.com/bbscoin/bbscoin.git
 cd bbscoin
 mkdir build
