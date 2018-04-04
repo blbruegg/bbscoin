@@ -1108,12 +1108,16 @@ bool RpcServer::on_get_txs_by_height(const COMMAND_RPC_TXS_BY_HEIGHT::request& r
 }
 
 bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAND_RPC_TXS_POOL::response& res) {
-  auto pool = m_core.getPoolTransactions(req.excludeHashes);
-  IBlockchainCache* cache =  m_core.getCache();
-
   res.status = CORE_RPC_STATUS_OK;
+  
+  IBlockchainCache* cache =  m_core.getCache();
+  std::vector<Crypto::Hash> newHashes;
+  std::vector<Crypto::Hash> deletedHashes;
+  m_core.getTransactionPoolDifference(req.knownHashes, newHashes, res.deletedHashes);
 
-  for (const Transaction tx : pool) {
+  for (const auto& hash : newHashes) {
+    Transaction tx = m_core.getPoolTransaction(hash);
+
     if (req.excludeFusion && m_core.getCurrency().isFusionTransaction(tx)) {
       continue;
     }
@@ -1161,7 +1165,7 @@ bool RpcServer::on_get_txs_pool(const COMMAND_RPC_TXS_POOL::request& req, COMMAN
       }
     }
 
-    res.transactions.push_back(std::move(txRecord));
+    res.newTransactions.push_back(std::move(txRecord));
   }
 
   return true;

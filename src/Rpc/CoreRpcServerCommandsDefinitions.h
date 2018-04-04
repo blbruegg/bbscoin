@@ -916,21 +916,23 @@ struct PoolTransactionRecord {
 struct COMMAND_RPC_TXS_POOL {
   struct request {
     bool excludeFusion = false;
-    std::vector<Crypto::Hash> excludeHashes;
+    std::vector<Crypto::Hash> knownHashes;
     
     void serialize(ISerializer& s) {
       KV_MEMBER(excludeFusion)
-      KV_MEMBER(excludeHashes)
+      KV_MEMBER(knownHashes)
     }
   };
   
   struct response {
     std::string status;
-    std::vector<PoolTransactionRecord> transactions;
+    std::vector<PoolTransactionRecord> newTransactions;
+    std::vector<Crypto::Hash> deletedHashes;
 
     void serialize(ISerializer& s) {
       KV_MEMBER(status)
-      KV_MEMBER(transactions)
+      KV_MEMBER(newTransactions)
+      KV_MEMBER(deletedHashes)
     }
   };
 };
