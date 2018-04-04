@@ -1177,6 +1177,10 @@ std::vector<Transaction> Core::getPoolTransactions() const {
   return getPoolTransactions(excludeHashed);
 }
 
+Transaction Core::getPoolTransaction(Crypto::Hash hash) const {
+  return transactionPool->getTransaction(hash).getTransaction();
+}
+
 std::vector<Transaction> Core::getPoolTransactions(std::vector<Crypto::Hash> excludeHashes) const {
   throwIfNotInitialized();
 

@@ -106,6 +106,7 @@ public:
   virtual std::vector<BlockTemplate> getAlternativeBlocks() const override;
   virtual std::vector<Transaction> getPoolTransactions() const override;
   virtual std::vector<Transaction> getPoolTransactions(std::vector<Crypto::Hash> excludeHashes) const override;
+  virtual Transaction getPoolTransaction(Crypto::Hash hash) const;
 
   const Currency& getCurrency() const;
 
@@ -120,6 +121,7 @@ public:
   virtual IBlockchainCache* findSegmentContainingBlock(const Crypto::Hash& blockHash) const;
   virtual IBlockchainCache* getCache() const;
   virtual size_t getMaxTransactionAllowedSize() const override;
+  virtual void getTransactionPoolDifference(const std::vector<Crypto::Hash>& knownHashes, std::vector<Crypto::Hash>& newTransactions, std::vector<Crypto::Hash>& deletedTransactions) const;
 
 private:
   const Currency& currency;
@@ -174,8 +176,6 @@ private:
   bool notifyObservers(BlockchainMessage&& msg);
   void fillQueryBlockFullInfo(uint32_t fullOffset, uint32_t currentIndex, size_t maxItemsCount, std::vector<BlockFullInfo>& entries) const;
   void fillQueryBlockShortInfo(uint32_t fullOffset, uint32_t currentIndex, size_t maxItemsCount, std::vector<BlockShortInfo>& entries) const;
-
-  void getTransactionPoolDifference(const std::vector<Crypto::Hash>& knownHashes, std::vector<Crypto::Hash>& newTransactions, std::vector<Crypto::Hash>& deletedTransactions) const;
 
   uint8_t getBlockMajorVersionForHeight(uint32_t height) const;
   size_t calculateCumulativeBlocksizeLimit(uint32_t height) const;
