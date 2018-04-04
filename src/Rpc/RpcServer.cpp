@@ -476,7 +476,7 @@ bool RpcServer::on_get_info(const COMMAND_RPC_GET_INFO::request& req, COMMAND_RP
 }
 
 bool RpcServer::on_get_height(const COMMAND_RPC_GET_HEIGHT::request& req, COMMAND_RPC_GET_HEIGHT::response& res) {
-  res.height = m_core.getTopBlockIndex();
+  res.height = m_core.getTopBlockIndex() + 1;
   res.status = CORE_RPC_STATUS_OK;
   return true;
 }
