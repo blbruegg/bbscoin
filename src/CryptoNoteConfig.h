@@ -63,7 +63,7 @@ const size_t   DIFFICULTY_CUT_V3                             = 60;
 const size_t   DIFFICULTY_LAG                                = 15;  // !!!
 const size_t   DIFFICULTY_LAG_V1                             = 15;
 const size_t   DIFFICULTY_LAG_V2                             = 15;
-const size_t   DIFFICULTY_LAG_V3                             = 15;
+const size_t   DIFFICULTY_LAG_V3                             = 0;
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
 const size_t   MAX_BLOCK_SIZE_INITIAL                        = 20 * 1024;
