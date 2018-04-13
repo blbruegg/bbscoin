@@ -76,7 +76,7 @@ bool Currency::init() {
   if (isTestnet()) {
     m_difficultyTarget = 10;
     m_upgradeHeightV2 = 100;
-    m_upgradeHeightV3 = static_cast<uint32_t>(-1);
+    m_upgradeHeightV3 = 160;
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
     m_txPoolFileName = "testnet_" + m_txPoolFileName;
@@ -489,13 +489,13 @@ Difficulty Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::vecto
 
 Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const {
   if (version >= BLOCK_MAJOR_VERSION_2) {
-  	  return nextDifficultyV2(version, blockIndex, timestamps, cumulativeDifficulties);
+  	  return nextDifficultyV2_V3(version, blockIndex, timestamps, cumulativeDifficulties);
   } else {
   	  return nextDifficulty(timestamps, cumulativeDifficulties);
   }
 }
 
-Difficulty Currency::nextDifficultyV2(
+Difficulty Currency::nextDifficultyV2_V3(
   uint8_t version, uint32_t blockIndex, 
   std::vector<uint64_t> timestamps,
   std::vector<Difficulty> cumulativeDifficulties
@@ -512,12 +512,22 @@ Difficulty Currency::nextDifficultyV2(
   // N=45, 60, 70, 100, 140 for T=600, 240, 120, 90, and 60 respectively.
 
   const int64_t T = static_cast<int64_t>(m_difficultyTarget);
-  size_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V2;
+  size_t N = version == BLOCK_MAJOR_VERSION_2 ? 
+    CryptoNote::parameters::DIFFICULTY_WINDOW_V2 : 
+    CryptoNote::parameters::DIFFICULTY_WINDOW_V3;
 
-  if (timestamps.size() > N) {
-    timestamps.resize(N + 1);
-    cumulativeDifficulties.resize(N + 1);
+  if (version == BLOCK_MAJOR_VERSION_2) {
+    if (timestamps.size() > N) {
+      timestamps.resize(N + 1);
+      cumulativeDifficulties.resize(N + 1);
+    }
+  } else {
+    while (timestamps.size() > N + 1) {
+      timestamps.erase(timestamps.begin());
+      cumulativeDifficulties.erase(cumulativeDifficulties.begin());
+    }
   }
+
   size_t n = timestamps.size();
   assert(n == cumulativeDifficulties.size());
   assert(n <= N + 1);
@@ -539,7 +549,11 @@ Difficulty Currency::nextDifficultyV2(
   // Loop through N most recent blocks.
   for (int64_t i = 1; i <= N; i++) {
     solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
-    solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-6 * T)));
+    if (version == BLOCK_MAJOR_VERSION_2) {
+      solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-6 * T)));
+    } else {
+      solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-7 * T)));
+    }
     difficulty = cumulativeDifficulties[i] - cumulativeDifficulties[i - 1];
     LWMA += solveTime * i / k;
     sum_inverse_D += 1 / static_cast<double_t>(difficulty);
