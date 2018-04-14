@@ -74,9 +74,9 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
-    m_difficultyTarget = 10;
+    m_difficultyTarget = 5;
     m_upgradeHeightV2 = 100;
-    m_upgradeHeightV3 = 160;
+    m_upgradeHeightV3 = 150;
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
     m_txPoolFileName = "testnet_" + m_txPoolFileName;
