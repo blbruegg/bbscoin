@@ -67,3 +67,4 @@ static inline void xor64(uint64_t *a, const uint64_t b)
     VARIANT1_CHECK(); \
   } \
   const uint64_t tweak1_2 = variant > 0 ? (ctx->state.hs.w[24] ^ (*((const uint64_t*)NONCE_POINTER))) : 0
+
