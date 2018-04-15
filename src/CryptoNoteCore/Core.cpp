@@ -1023,13 +1023,20 @@ bool Core::getBlockTemplate(BlockTemplate& b, const AccountPublicAddress& adr, c
       b.minorVersion = BLOCK_MINOR_VERSION_0;
     }
 
-    b.parentBlock.majorVersion = b.majorVersion;
-    // node-cryptonote-util's code is so old that only works with majorVersion set to 1
-    // and when constructing the block template it uses majorVersion parent as version
-    // this makes it incompatible with auto upgrade in the mining tools like xmr-star
-    // bbs's own fork of check minorVersion to determine whether it is parent block
-    // in this way we can bypass the issue
-    b.parentBlock.minorVersion = 1;
+    if (b.majorVersion >= BLOCK_MAJOR_VERSION_3) {
+      b.parentBlock.majorVersion = b.majorVersion;
+      // node-cryptonote-util's code is so old that only works with majorVersion set to 1
+      // and when constructing the block template it uses majorVersion parent as version
+      // this makes it incompatible with auto upgrade in the mining tools like xmr-star
+      // bbs's own fork of check minorVersion to determine whether it is parent block
+      // in this way we can bypass the issue
+      b.parentBlock.minorVersion = 1;
+    } else {
+      // The code here is fucked up
+      b.parentBlock.majorVersion = BLOCK_MAJOR_VERSION_1;
+      b.parentBlock.majorVersion = BLOCK_MINOR_VERSION_0;
+    }
+
     b.parentBlock.transactionCount = 1;
 
     TransactionExtraMergeMiningTag mmTag = boost::value_initialized<decltype(mmTag)>();
@@ -1377,12 +1384,12 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
   }
 
   if (block.majorVersion >= BLOCK_MAJOR_VERSION_2) {
-    // if (block.majorVersion == BLOCK_MAJOR_VERSION_2 && block.parentBlock.majorVersion > BLOCK_MAJOR_VERSION_1) {
-    //   logger(Logging::ERROR, Logging::BRIGHT_RED) << "Parent block of block " << cachedBlock.getBlockHash() << " has wrong major version: "
-    //                             << static_cast<int>(block.parentBlock.majorVersion) << ", at index " << cachedBlock.getBlockIndex()
-    //                             << " expected version is " << static_cast<int>(BLOCK_MAJOR_VERSION_1);
-    //   return error::BlockValidationError::PARENT_BLOCK_WRONG_VERSION;
-    // }
+    if (block.majorVersion == BLOCK_MAJOR_VERSION_2 && block.parentBlock.majorVersion > BLOCK_MAJOR_VERSION_1) {
+      logger(Logging::ERROR, Logging::BRIGHT_RED) << "Parent block of block " << cachedBlock.getBlockHash() << " has wrong major version: "
+                                << static_cast<int>(block.parentBlock.majorVersion) << ", at index " << cachedBlock.getBlockIndex()
+                                << " expected version is " << static_cast<int>(BLOCK_MAJOR_VERSION_1);
+      return error::BlockValidationError::PARENT_BLOCK_WRONG_VERSION;
+    }
 
     if (cachedBlock.getParentBlockBinaryArray(false).size() > 2048) {
       return error::BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG;
