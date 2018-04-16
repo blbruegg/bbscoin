@@ -132,9 +132,18 @@ const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "8f80f9a5a434a9f1
 
 const char* const SEED_NODES[] = { 
   "seed.bbscoin.xyz:11204", 
+  "1.seed.bbscoin.xyz:11204", 
+  "2.seed.bbscoin.xyz:11204", 
+  "3.seed.bbscoin.xyz:11204", 
+  "4.seed.bbscoin.xyz:11204", 
+  "5.seed.bbscoin.xyz:11204", 
+  "6.seed.bbscoin.xyz:11204", 
+  "7.seed.bbscoin.xyz:11204", 
+  "8.seed.bbscoin.xyz:11204", 
+  "9.seed.bbscoin.xyz:11204", 
+  "10.seed.bbscoin.xyz:11204", 
   "173.82.151.145:11204", 
-  "104.224.176.92:11204",
-  "207.148.71.221:11204" 
+  "45.77.187.229:11204" 
 };
 
 struct CheckpointData {
