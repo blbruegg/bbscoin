@@ -83,7 +83,7 @@ const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_V2                             = 60000;
-const uint32_t UPGRADE_HEIGHT_V3                             = 4294967294;
+const uint32_t UPGRADE_HEIGHT_V3                             = 72500;
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -154,7 +154,8 @@ struct CheckpointData {
 const std::initializer_list<CheckpointData> CHECKPOINTS = {
     {54606, "18a155e5ae0a1b4992518698d1271382b566c49ed859540f3c81dc46fa5b89f6"},
     {60000, "dd02fb33f84443584e0432c28df61b372382c9a20542a5cb6b655a7932bd7d58"},
-    {63600, "41c73113de2a37ae3a543c79083d4e509713a70a53ae5e7c70fcea641c396c56"}
+    {63600, "41c73113de2a37ae3a543c79083d4e509713a70a53ae5e7c70fcea641c396c56"},
+    {64550, "8554549b78dc831fdca2b46cbef83729e0288a1997998c19fcb37e17164689c7"}
 };
 
 } // CryptoNote
