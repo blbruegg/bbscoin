@@ -19,7 +19,6 @@
 /* The following was adapted from the Monero Cryptonight variant change of April 2018. */
 
 #include <stdio.h>
-#include <unistd.h>
 
 #pragma once
 
