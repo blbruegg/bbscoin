@@ -19,7 +19,10 @@
 /* The following was adapted from the Monero Cryptonight variant change of April 2018. */
 
 #include <stdio.h>
-
+#ifdef WIN32
+#else
+#include <unistd.h>
+#endif
 #pragma once
 
 static inline void xor64(uint64_t *a, const uint64_t b)
