@@ -948,8 +948,12 @@ bool DatabaseBlockchainCache::checkIfSpent(const Crypto::KeyImage& keyImage, uin
 
   auto readResult = batch.extractResult();
   auto it = readResult.getBlockIndexesBySpentKeyImages().find(keyImage);
+  bool spent = it != readResult.getBlockIndexesBySpentKeyImages().end() && it->second <= blockIndex;
+  if (spent) {
+    logger(Logging::DEBUGGING) << "key image " << Common::podToHex(keyImage) << " spent in block " << static_cast<int>(it->second);
+  }
 
-  return it != readResult.getBlockIndexesBySpentKeyImages().end() && it->second <= blockIndex;
+  return spent;
 }
 
 bool DatabaseBlockchainCache::checkIfSpent(const Crypto::KeyImage& keyImage) const {

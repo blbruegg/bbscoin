@@ -1385,7 +1385,7 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
 
   if (block.majorVersion >= BLOCK_MAJOR_VERSION_2) {
     if (block.majorVersion == BLOCK_MAJOR_VERSION_2 && block.parentBlock.majorVersion > BLOCK_MAJOR_VERSION_1) {
-      logger(Logging::ERROR, Logging::BRIGHT_RED) << "Parent block of block " << cachedBlock.getBlockHash() << " has wrong major version: "
+      logger(Logging::ERROR, Logging::BRIGHT_RED) << "Parent block of block " << cachedBlock.getBlockHash() << " version " << static_cast<int>(block.majorVersion) << " has wrong major version: "
                                 << static_cast<int>(block.parentBlock.majorVersion) << ", at index " << cachedBlock.getBlockIndex()
                                 << " expected version is " << static_cast<int>(BLOCK_MAJOR_VERSION_1);
       return error::BlockValidationError::PARENT_BLOCK_WRONG_VERSION;
