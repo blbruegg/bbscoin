@@ -1379,6 +1379,7 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
 
   minerReward = 0;
 
+  logger(Logging::ERROR, Logging::BRIGHT_RED) << "Expected" << static_cast<int>(upgradeManager->getBlockMajorVersion(cachedBlock.getBlockIndex())) << " Submitted " << static_cast<int>(block.majorVersion);
   if (upgradeManager->getBlockMajorVersion(cachedBlock.getBlockIndex()) != block.majorVersion) {
     return error::BlockValidationError::WRONG_VERSION;
   }
