@@ -1780,6 +1780,7 @@ uint8_t Core::getBlockMajorVersionForHeight(uint32_t height) const {
 
 size_t Core::calculateCumulativeBlocksizeLimit(uint32_t height) const {
   uint8_t nextBlockMajorVersion = getBlockMajorVersionForHeight(height);
+  logger(Logging::DEBUGGING) << "nextBlockMajorVersion " << static_cast<int>(nextBlockMajorVersion);
   size_t nextBlockGrantedFullRewardZone = currency.blockGrantedFullRewardZoneByBlockVersion(nextBlockMajorVersion);
 
   assert(!chainsStorage.empty());
