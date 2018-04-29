@@ -565,7 +565,7 @@ std::error_code Core::addBlock(const CachedBlock& cachedBlock, RawBlock&& rawBlo
   bool addOnTop = cache->getTopBlockIndex() == previousBlockIndex;
   auto maxBlockCumulativeSize = currency.maxBlockCumulativeSize(previousBlockIndex + 1);
   if (cumulativeBlockSize > maxBlockCumulativeSize) {
-    logger(Logging::WARNING) << "Block " << cachedBlock.getBlockHash() << " has too big cumulative size";
+    logger(Logging::WARNING) << "Block " << cachedBlock.getBlockHash() << " has too big cumulative size" << static_cast<int>(cumulativeBlockSize) << " " << static_cast<int>(maxBlockCumulativeSize);
     return error::BlockValidationError::CUMULATIVE_BLOCK_SIZE_TOO_BIG;
   }
 
@@ -1379,6 +1379,7 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
 
   minerReward = 0;
 
+  logger(Logging::ERROR, Logging::BRIGHT_RED) << "Expected" << static_cast<int>(upgradeManager->getBlockMajorVersion(cachedBlock.getBlockIndex())) << " Submitted " << static_cast<int>(block.majorVersion);
   if (upgradeManager->getBlockMajorVersion(cachedBlock.getBlockIndex()) != block.majorVersion) {
     return error::BlockValidationError::WRONG_VERSION;
   }
@@ -1779,6 +1780,7 @@ uint8_t Core::getBlockMajorVersionForHeight(uint32_t height) const {
 
 size_t Core::calculateCumulativeBlocksizeLimit(uint32_t height) const {
   uint8_t nextBlockMajorVersion = getBlockMajorVersionForHeight(height);
+  logger(Logging::DEBUGGING) << "nextBlockMajorVersion " << static_cast<int>(nextBlockMajorVersion);
   size_t nextBlockGrantedFullRewardZone = currency.blockGrantedFullRewardZoneByBlockVersion(nextBlockMajorVersion);
 
   assert(!chainsStorage.empty());
