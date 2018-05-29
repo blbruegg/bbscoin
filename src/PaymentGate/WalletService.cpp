@@ -879,6 +879,8 @@ std::error_code WalletService::createDelayedTransaction(const CreateDelayedTrans
       validateAddresses({ request.changeAddress }, currency, logger);
     }
 
+    validateMixin(request.anonymity, logger);
+
     CryptoNote::TransactionParameters sendParams;
     if (!request.paymentId.empty()) {
       addPaymentIdToExtra(request.paymentId, sendParams.extra);
@@ -1049,6 +1051,8 @@ std::error_code WalletService::sendFusionTransaction(uint64_t threshold, uint32_
     if (!destinationAddress.empty()) {
       validateAddresses({ destinationAddress }, currency, logger);
     }
+
+    validateMixin(anonymity, logger);
 
     size_t transactionId = fusionManager.createFusionTransaction(threshold, anonymity, addresses, destinationAddress);
     transactionHash = Common::podToHex(wallet.getTransaction(transactionId).hash);
