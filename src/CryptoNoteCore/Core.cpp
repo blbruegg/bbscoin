@@ -408,7 +408,7 @@ bool Core::queryBlocks(const std::vector<Crypto::Hash>& blockHashes, uint64_t ti
 
     return true;
   } catch (std::exception&) {
-    // TODO log
+    logger(Logging::ERROR) << "Failed to query blocks: " << e.what();
     return false;
   }
 }
