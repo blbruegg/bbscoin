@@ -49,6 +49,10 @@ const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT              = 8;
 const uint64_t MINIMUM_FEE                                   = uint64_t(100000);
 const uint64_t DEFAULT_DUST_THRESHOLD                        = uint64_t(100000);
 
+const uint16_t MINIMUM_MIXIN_V1                              = 0;
+const uint16_t MAXIMUM_MIXIN_V1                              = 100;
+const uint32_t MIXIN_LIMITS_V1_HEIGHT                        = 0; // Test from 0
+
 const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2         = 7 * DIFFICULTY_TARGET;
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
