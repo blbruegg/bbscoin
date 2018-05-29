@@ -155,3 +155,10 @@ endif()
 add_subdirectory(external)
 add_subdirectory(src)
 # add_subdirectory(tests)
+
+if(NOT MSVC)
+  execute_process(
+    COMMAND cmake ${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb -DWITH_GFLAGS=0 -B${PROJECT_BINARY_DIR}/rocksdb
+  )
+  set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${PROJECT_BINARY_DIR}/rocksdb/librocksdb.a")
+endif()
