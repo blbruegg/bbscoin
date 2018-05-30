@@ -155,6 +155,7 @@ private:
   std::vector<Crypto::Hash> getBlockHashes(uint32_t startBlockIndex, uint32_t maxCount) const;
 
   std::error_code validateBlock(const CachedBlock& block, IBlockchainCache* cache, uint64_t& minerReward);
+  bool validateMixin(const CachedTransaction& transaction, uint16_t minMixin, uint16_t maxMixin);
 
   uint64_t getAdjustedTime() const;
   void updateMainChainSet();

@@ -166,6 +166,16 @@ struct TransferCommand {
         return false;
       }
 
+      if (fake_outs_count < CryptoNote::parameters::MINIMUM_MIXIN_V1) {
+        logger(ERROR, BRIGHT_RED) << "mixin_count should be bigger than " << CryptoNote::parameters::MINIMUM_MIXIN_V1 << ", got " << fake_outs_count;
+        return false;
+      }
+
+      if (fake_outs_count > CryptoNote::parameters::MAXIMUM_MIXIN_V1) {
+        logger(ERROR, BRIGHT_RED) << "mixin_count should be lower than " << CryptoNote::parameters::MAXIMUM_MIXIN_V1 << ", got " << fake_outs_count;
+        return false;
+      }
+
       while (!ar.eof()) {
 
         auto arg = ar.next();

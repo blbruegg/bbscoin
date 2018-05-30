@@ -276,6 +276,18 @@ void validateAddresses(const std::vector<std::string>& addresses, const CryptoNo
   }
 }
 
+void validateMixin(const uint32_t mixin, Logging::LoggerRef logger) {
+  if (mixin < CryptoNote::parameters::MINIMUM_MIXIN_V1) {
+    logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << "Mixin " << mixin
+      << " under minimum threshold " << CryptoNote::parameters::MINIMUM_MIXIN_V1;
+    throw std::system_error(make_error_code(CryptoNote::error::MIXIN_BELOW_THRESHOLD));
+  } else if (mixin > CryptoNote::parameters::MAXIMUM_MIXIN_V1) {
+    logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << "Mixin " << mixin
+      << " above maximum threshold " << CryptoNote::parameters::MAXIMUM_MIXIN_V1;
+    throw std::system_error(make_error_code(CryptoNote::error::MIXIN_ABOVE_THRESHOLD));
+  }
+}
+
 std::string getValidatedTransactionExtraString(const std::string& extraString) {
   std::vector<uint8_t> binary;
   if (!Common::fromHex(extraString, binary)) {
@@ -826,6 +838,8 @@ std::error_code WalletService::sendTransaction(const SendTransaction::Request& r
       validateAddresses({ request.changeAddress }, currency, logger);
     }
 
+    validateMixin(request.anonymity, logger);
+
     CryptoNote::TransactionParameters sendParams;
     if (!request.paymentId.empty()) {
       addPaymentIdToExtra(request.paymentId, sendParams.extra);
@@ -864,6 +878,8 @@ std::error_code WalletService::createDelayedTransaction(const CreateDelayedTrans
     if (!request.changeAddress.empty()) {
       validateAddresses({ request.changeAddress }, currency, logger);
     }
+
+    validateMixin(request.anonymity, logger);
 
     CryptoNote::TransactionParameters sendParams;
     if (!request.paymentId.empty()) {
@@ -1036,6 +1052,8 @@ std::error_code WalletService::sendFusionTransaction(uint64_t threshold, uint32_
       validateAddresses({ destinationAddress }, currency, logger);
     }
 
+    validateMixin(anonymity, logger);
+
     size_t transactionId = fusionManager.createFusionTransaction(threshold, anonymity, addresses, destinationAddress);
     transactionHash = Common::podToHex(wallet.getTransaction(transactionId).hash);
 
@@ -1118,7 +1136,7 @@ void WalletService::replaceWithNewWallet(const Crypto::SecretKey& viewSecretKey)
 
     if (!boost::filesystem::exists(backup)) {
       boost::filesystem::rename(config.walletFile, backup);
-      logger(Logging::DEBUGGING) << "Walled file '" << config.walletFile  << "' backed up to '" << backup << '\'';
+      logger(Logging::DEBUGGING) << "Wallet file '" << config.walletFile  << "' backed up to '" << backup << '\'';
       break;
     }
   }
