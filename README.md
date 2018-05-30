@@ -12,9 +12,6 @@ This repo contains daemons for blockchain, payment and wallet service.
 sudo apt-get install build-essential libboost-all-dev git cmake
 git clone https://github.com/bbscoin/bbscoin.git
 cd bbscoin
-mkdir build
-cd build
-cmake ..
 make
 ```
 
@@ -32,9 +29,6 @@ cd boost_1_66_0
 cd ..
 git clone https://github.com/bbscoin/bbscoin.git
 cd bbscoin
-mkdir build
-cd build
-cmake ..
 make
 ```
 
@@ -75,6 +69,8 @@ Good luck!
 brew update
 brew install cmake
 brew install boost
+git clone https://github.com/bbscoin/bbscoin.git
+cd bbscoin
 make
 ```
 The resulting executables can be found in `build/release/src`.
