@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018, The Turtlecoin Developers
 // Copyright (c) 2018, The Monero Project
-// Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
+// Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers. 2018 BBSCoin developers
 //
-// This file is part of Bytecoin.
+// This file is part of BBSCoin.
 //
 // Bytecoin is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
