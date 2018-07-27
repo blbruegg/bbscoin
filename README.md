@@ -88,5 +88,6 @@ BTC: <br>1Kpqk3BTzFCvyuBZDTbe5Y8o24VA1AQ5Km <br><br>
 ETH: <br>0x29da788fb4a162e97d64cc0ec1817af35fe14ad1 <br><br>
 
 ## Links
-Official Web Site: https://bbscoin.xyz
-Web Wallet: https://bbs.money
+
+* Official Web Site: https://bbscoin.xyz
+* Web Wallet: https://bbs.money
