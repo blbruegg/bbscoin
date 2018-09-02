@@ -146,7 +146,7 @@ const char* const SEED_NODES[] = {
   "8.seed.bbscoin.xyz:11204", 
   "9.seed.bbscoin.xyz:11204", 
   "10.seed.bbscoin.xyz:11204", 
-  "173.82.151.145:11204", 
+  "173.82.240.211:11204", 
   "45.77.187.229:11204" 
 };
 
