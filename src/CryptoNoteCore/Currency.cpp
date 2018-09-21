@@ -492,7 +492,7 @@ Difficulty Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::vecto
 
 Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const {
   if (version >= BLOCK_MAJOR_VERSION_4) {
-      return nextDifficultyV4(timestamps, cumulativeDifficulties);
+      return nextDifficultyV4(blockIndex, timestamps, cumulativeDifficulties);
   } else if (version >= BLOCK_MAJOR_VERSION_2) {
   	  return nextDifficultyV2_V3(version, blockIndex, timestamps, cumulativeDifficulties);
   } else {
@@ -504,6 +504,7 @@ Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::v
 // Copyright (c) 2017-2018 Zawy, MIT License
 // https://github.com/zawy12/difficulty-algorithms/issues/3
 Difficulty Currency::nextDifficultyV4(
+  uint32_t blockIndex, 
   std::vector<uint64_t> timestamps, 
   std::vector<Difficulty> cumulativeDifficulties
 ) const {
@@ -511,11 +512,19 @@ Difficulty Currency::nextDifficultyV4(
     int64_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V3;
     int64_t L(0), ST, sum_3_ST(0), next_D, prev_D;
 
-    /* If we are starting up, returning a difficulty guess. If you are a
-       new coin, you might want to set this to a decent estimate of your
-       hashrate */
-    if (!isTestnet() && timestamps.size() < static_cast<uint64_t>(N+1)) {
-        return 10000;
+    // If it's a new coin, do startup code. 
+    // Increase difficulty_guess if it needs to be much higher, but guess lower than lowest guess.
+    uint64_t difficulty_guess = 500000; 
+    if (timestamps.size() <= 10) {
+        return difficulty_guess;
+    }
+    if (timestamps.size() < static_cast<uint64_t>(N +1)) {
+        N = timestamps.size() - 1;
+    }
+
+    // If hashrate/difficulty ratio after a fork is < 1/3 prior ratio, hardcode D for N+1 blocks after fork. 
+    if (blockIndex <= upgradeHeight(BLOCK_MAJOR_VERSION_4) + static_cast<uint64_t>(N + 1)) {
+        return difficulty_guess;
     }
 
     for (int64_t i = 1; i <= N; i++) {  
@@ -527,14 +536,24 @@ Difficulty Currency::nextDifficultyV4(
         } 
     }
 
-    next_D = (static_cast<int64_t>(cumulativeDifficulties[N] - cumulativeDifficulties[0]) * T * (N+1) * 99) / (100 * 2 * L);
+    for ( int64_t i = 1; i <= N; i++) {  
+      ST = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i-1]);
+      ST = std::max(-5*T, std::min(ST, 6*T));
+      L +=  ST * i ; 
+      if ( i > N-3 ) { sum_3_ST += ST; } 
+    }
+    next_D = (static_cast<int64_t>(cumulativeDifficulties[N] - cumulativeDifficulties[0])*T*(N+1)*99)/(100*2*L);
     prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N-1];
-    next_D = std::max((prev_D * 67) / 100, std::min(next_D, (prev_D * 150) / 100));
+    next_D = std::max((prev_D*67)/100, std::min(next_D, (prev_D*150)/100));
 
-    if (sum_3_ST < (8 * T) / 10) {  
-        next_D = std::max(next_D, (prev_D * 108) / 100);
+    if (sum_3_ST < (8*T)/10) {
+        next_D = std::max(next_D,(prev_D*108)/100);
     }
 
+    std::cout << "cumulativeDifficulties " << cumulativeDifficulties.size() << std::endl;
+    std::cout << "timestamps " << timestamps.size() << std::endl;
+    std::cout << "next_D " << static_cast<uint64_t>(next_D) << std::endl;
+    std::cout << "prev_D " << static_cast<uint64_t>(prev_D) << std::endl;
     return static_cast<uint64_t>(next_D);
 }
 
