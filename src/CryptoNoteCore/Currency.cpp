@@ -121,7 +121,9 @@ bool Currency::generateGenesisBlock() {
 }
 
 size_t Currency::difficultyWindowByBlockVersion(uint8_t blockMajorVersion) const {
-  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
+  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+    return CryptoNote::parameters::DIFFICULTY_WINDOW_V4;
+  } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3) {
     return CryptoNote::parameters::DIFFICULTY_WINDOW_V3;
   } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
     return CryptoNote::parameters::DIFFICULTY_WINDOW_V2;
@@ -177,7 +179,9 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const {
 }
 
 uint64_t Currency::blockFutureTimeLimitByBlockVersion(uint8_t majorVersion) const {
-  if (majorVersion >= BLOCK_MAJOR_VERSION_2) {
+  if (majorVersion >= BLOCK_MAJOR_VERSION_4) {
+    return CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V4;
+  } else if (majorVersion == BLOCK_MAJOR_VERSION_2 || majorVersion == BLOCK_MAJOR_VERSION_3) {
     return CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2;
   } else {
     return CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
@@ -509,7 +513,7 @@ Difficulty Currency::nextDifficultyV4(
   std::vector<Difficulty> cumulativeDifficulties
 ) const {
     int64_t T = CryptoNote::parameters::DIFFICULTY_TARGET;
-    int64_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V3;
+    int64_t N = CryptoNote::parameters::DIFFICULTY_WINDOW_V4;
     int64_t L(0), ST, sum_3_ST(0), next_D, prev_D;
 
     // If it's a new coin, do startup code. 
@@ -529,7 +533,7 @@ Difficulty Currency::nextDifficultyV4(
 
     for (int64_t i = 1; i <= N; i++) {  
         ST = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i-1]);
-        ST = std::max(-4 * T, std::min(ST, 6 * T));
+        ST = std::max(-5 * T, std::min(ST, 6 * T));
         L +=  ST * i; 
         if (i > N-3) {
             sum_3_ST += ST;
@@ -550,10 +554,10 @@ Difficulty Currency::nextDifficultyV4(
         next_D = std::max(next_D,(prev_D*108)/100);
     }
 
-    std::cout << "cumulativeDifficulties " << cumulativeDifficulties.size() << std::endl;
-    std::cout << "timestamps " << timestamps.size() << std::endl;
-    std::cout << "next_D " << static_cast<uint64_t>(next_D) << std::endl;
-    std::cout << "prev_D " << static_cast<uint64_t>(prev_D) << std::endl;
+//    std::cout << "cumulativeDifficulties " << cumulativeDifficulties.size() << std::endl;
+//    std::cout << "timestamps " << timestamps.size() << std::endl;
+//    std::cout << "next_D " << static_cast<uint64_t>(next_D) << std::endl;
+//    std::cout << "prev_D " << static_cast<uint64_t>(prev_D) << std::endl;
     return static_cast<uint64_t>(next_D);
 }
 
