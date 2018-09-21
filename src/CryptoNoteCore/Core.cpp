@@ -198,6 +198,7 @@ Core::Core(const Currency& currency, Logging::ILogger& logger, Checkpoints&& che
 
   upgradeManager->addMajorBlockVersion(BLOCK_MAJOR_VERSION_2, currency.upgradeHeight(BLOCK_MAJOR_VERSION_2));
   upgradeManager->addMajorBlockVersion(BLOCK_MAJOR_VERSION_3, currency.upgradeHeight(BLOCK_MAJOR_VERSION_3));
+  upgradeManager->addMajorBlockVersion(BLOCK_MAJOR_VERSION_4, currency.upgradeHeight(BLOCK_MAJOR_VERSION_4));
 
   transactionPool = std::unique_ptr<ITransactionPoolCleanWrapper>(new TransactionPoolCleanWrapper(
     std::unique_ptr<ITransactionPool>(new TransactionPool(logger)),
@@ -270,7 +271,7 @@ uint64_t Core::getBlockTimestampByIndex(uint32_t blockIndex) const {
   throwIfNotInitialized();
 
   auto timestamps = chainsLeaves[0]->getLastTimestamps(1, blockIndex, addGenesisBlock);
-  assert(!(timestamps.size() == 1));
+  // assert(!(timestamps.size() == 1));
 
   return timestamps[0];
 }
@@ -1143,9 +1144,17 @@ bool Core::getBlockTemplate(BlockTemplate& b, const AccountPublicAddress& adr, c
   // Thanks Jagerman for this
   // adapted from monero code by stevebrush for bytecoin 2 code
 
-  if(height >= currency.timestampCheckWindow()) {
+  uint64_t blockchain_timestamp_check_window;
+
+  if (height >= currency.upgradeHeight(BLOCK_MAJOR_VERSION_4)) {
+      blockchain_timestamp_check_window = CryptoNote::parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V4;
+  } else {
+      blockchain_timestamp_check_window = CryptoNote::parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW;
+  }
+
+  if(height >= blockchain_timestamp_check_window) {
       std::vector<uint64_t> timestamps;
-      for(size_t offset = height - currency.timestampCheckWindow(); offset < height; ++offset){
+      for(size_t offset = height - blockchain_timestamp_check_window; offset < height; ++offset){
           timestamps.push_back(getBlockTimestampByIndex(offset));
       }
       uint64_t median_ts = Common::medianValue(timestamps);

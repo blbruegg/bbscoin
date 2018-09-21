@@ -32,6 +32,7 @@ const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 60;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 60;
+const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V4          = 11;
 
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                  = (uint64_t)(-1);
@@ -88,7 +89,8 @@ const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_V2                             = 60000;
 const uint32_t UPGRADE_HEIGHT_V3                             = 72500;
-const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
+const uint32_t UPGRADE_HEIGHT_V4                             = 999999;
+const unsigned UPGRADE_VOTING_THRESHOLD                      = 1;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
@@ -109,6 +111,7 @@ const uint8_t  CURRENT_TRANSACTION_VERSION                   =  TRANSACTION_VERS
 const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
 const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
+const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
 const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;
 
@@ -163,7 +166,8 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
     {72580, "9fb75a9b219f884afc75c2fba08ac31ffe8ec5a188da3694edce9b094bd3741f"},
     {94730, "ec4e91d22603815601ece440e045c5f73da41b085468a1239757795a5887f3b4"},
     {129000, "65c713a8cb27b35ec028dbc47594e651f7b7c17faa2860d51564deaf1095a93f"},
-    {154660, "03e4a9d3895af937b341f957c3bf303e873ec50ed4e09280fe4780a66c5f2645"}
+    {154660, "03e4a9d3895af937b341f957c3bf303e873ec50ed4e09280fe4780a66c5f2645"},
+    {174650, "4cc1db35a85a69af59fb3735ba2e9c86d20f072f41b3dd2726bcdd59a5c620d4"}
 };
 
 } // CryptoNote
