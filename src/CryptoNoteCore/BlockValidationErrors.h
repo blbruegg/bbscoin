@@ -56,7 +56,7 @@ public:
 
     switch (code) {
       case BlockValidationError::VALIDATION_SUCCESS: return "Block validated successfully";
-      case BlockValidationError::WRONG_VERSION: return "Wrong block version";
+      case BlockValidationError::WRONG_VERSION: return "Wrong block version. Please check if there is a new version from https://bbscoin.xyz";
       case BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG: return "Parent block size is too big";
       case BlockValidationError::PARENT_BLOCK_WRONG_VERSION: return "Parent block has wrong version";
       case BlockValidationError::TIMESTAMP_TOO_FAR_IN_FUTURE: return "Timestamp is too far in future";

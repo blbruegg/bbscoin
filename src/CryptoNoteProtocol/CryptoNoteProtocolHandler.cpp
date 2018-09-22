@@ -582,12 +582,12 @@ bool CryptoNoteProtocolHandler::on_connection_synchronized() {
   bool val_expected = false;
   if (m_synchronized.compare_exchange_strong(val_expected, true)) {
     logger(Logging::INFO) << ENDL << "**********************************************************************" << ENDL
-      << "You are now synchronized with the network. You may now start simplewallet." << ENDL
+      << "You are now synchronized with the BBSCoin network. You may now start simplewallet." << ENDL
       << ENDL
       << "Please note, that the blockchain will be saved only after you quit the daemon with \"exit\" command or if you use \"save\" command." << ENDL
       << "Otherwise, you will possibly need to synchronize the blockchain again." << ENDL
       << ENDL
-      << "Use \"help\" command to see the list of available commands." << ENDL
+      << "Use \"help\" command to see the list of available commands. For more information, you can check https://bbscoin.xyz/" << ENDL
       << "**********************************************************************";
 
     m_observerManager.notify(&ICryptoNoteProtocolObserver::blockchainSynchronized, m_core.getTopBlockIndex());
