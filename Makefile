@@ -4,6 +4,22 @@ cmake-debug:
 	mkdir -p build/debug
 	cd build/debug && cmake -D CMAKE_BUILD_TYPE=Debug ../..
 
+start-testnet:
+	rm -rf bbs_testnet_data && \
+	mkdir -p bbs_testnet_data && \
+	./build/release/src/bbscoind --testnet --data-dir=bbs_testnet_data
+
+start-testnet-wallet:
+	rm -rf testnet.wallet && \
+	rm -rf testnet.address && \
+	./build/release/src/simplewallet --testnet --generate-new-wallet testnet && \
+	./build/release/src/simplewallet --testnet --wallet-file testnet
+
+start-testnet-walletd:
+	rm -rf testnet_pool.wallet && \
+	./build/release/src/walletd --testnet -w testnet_pool.wallet -g  && \
+	./build/release/src/walletd --testnet -w testnet_pool.wallet
+
 build-debug: cmake-debug
 	cd build/debug && $(MAKE)
 
