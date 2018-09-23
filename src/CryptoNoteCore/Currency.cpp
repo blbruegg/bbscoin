@@ -518,7 +518,7 @@ Difficulty Currency::nextDifficultyV4(
 
     // If it's a new coin, do startup code. 
     // Increase difficulty_guess if it needs to be much higher, but guess lower than lowest guess.
-    uint64_t difficulty_guess = 500000; 
+    uint64_t difficulty_guess = isTestnet() ? 1000 : 500000; 
     if (timestamps.size() <= 10) {
         return difficulty_guess;
     }
