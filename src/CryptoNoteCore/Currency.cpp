@@ -540,12 +540,16 @@ Difficulty Currency::nextDifficultyV4(
         } 
     }
 
-    for ( int64_t i = 1; i <= N; i++) {  
-      ST = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i-1]);
-      ST = std::max(-5*T, std::min(ST, 6*T));
-      L +=  ST * i ; 
-      if ( i > N-3 ) { sum_3_ST += ST; } 
+    // Bug in 180000 fork. The code stays here for backward compatibility 
+    if (blockIndex < 181500) {
+      for ( int64_t i = 1; i <= N; i++) {  
+        ST = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i-1]);
+        ST = std::max(-5*T, std::min(ST, 6*T));
+        L +=  ST * i ; 
+        if ( i > N-3 ) { sum_3_ST += ST; } 
+      }
     }
+
     next_D = (static_cast<int64_t>(cumulativeDifficulties[N] - cumulativeDifficulties[0])*T*(N+1)*99)/(100*2*L);
     prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N-1];
     next_D = std::max((prev_D*67)/100, std::min(next_D, (prev_D*150)/100));
