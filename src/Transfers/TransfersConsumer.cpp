@@ -460,7 +460,6 @@ std::error_code createTransfers(
 
       assert(out.key == reinterpret_cast<const PublicKey&>(in_ephemeral.publicKey));
 
-      info.amount = amount;
       if (public_keys_seen.find(out.key) != public_keys_seen.end())
       {
         info.amount = 0;
