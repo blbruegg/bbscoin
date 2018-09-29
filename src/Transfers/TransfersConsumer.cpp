@@ -1,5 +1,6 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers. 2018 BBSCoin developers
-//
+// Copyright (c) 2018, The Karbo Developers
+// 
 // This file is part of BBSCoin.
 //
 // Bytecoin is free software: you can redistribute it and/or modify
@@ -31,6 +32,8 @@
 
 using namespace Crypto;
 using namespace Logging;
+
+std::unordered_set<Crypto::PublicKey> public_keys_seen;
 
 namespace {
 
@@ -458,6 +461,16 @@ std::error_code createTransfers(
       assert(out.key == reinterpret_cast<const PublicKey&>(in_ephemeral.publicKey));
 
       info.amount = amount;
+      if (public_keys_seen.find(out.key) != public_keys_seen.end())
+      {
+        info.amount = 0;
+      }
+      else
+      {
+        public_keys_seen.insert(out.key);
+        info.amount = amount;
+      }
+
       info.outputKey = out.key;
 
     }
