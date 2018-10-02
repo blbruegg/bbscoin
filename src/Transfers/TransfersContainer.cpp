@@ -1,5 +1,4 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers. 2018 BBSCoin developers
-// Copyright (c) 2018, The Karbo Developers
 //
 // This file is part of BBSCoin.
 //
@@ -155,13 +154,6 @@ TransfersContainer::TransfersContainer(const Currency& currency, Logging::ILogge
   m_currency(currency),
   m_logger(logger, "TransfersContainer"),
   m_transactionSpendableAge(transactionSpendableAge) {
-
-  // Burned unit check
-  getOutputs(m_allTransfers, ITransfersContainer::IncludeTypeAll);
-  for (auto& output : m_allTransfers)
-  {
-    m_allOutputKeys.insert(output.outputKey);
-  }
 }
 
 bool TransfersContainer::addTransaction(const TransactionBlockInfo& block, const ITransactionReader& tx,
@@ -200,6 +192,8 @@ bool TransfersContainer::addTransaction(const TransactionBlockInfo& block, const
         ", transaction hash " << tx.getTransactionHash();
       deleteTransactionTransfers(tx.getTransactionHash());
     }
+
+    throw;
   }
 }
 
@@ -278,16 +272,6 @@ bool TransfersContainer::addTransactionOutputs(const TransactionBlockInfo& block
           if (it->transactionHash == info.transactionHash && it->outputInTransaction == info.outputInTransaction) {
             duplicate = true;
           }
-        }
-
-        // check for burned output key
-        if (m_allOutputKeys.find(transfer.outputKey) != m_allOutputKeys.end())
-        {
-          duplicate = true;
-        }
-        else
-        {
-          m_allOutputKeys.insert(transfer.outputKey);
         }
 
         if (duplicate) {

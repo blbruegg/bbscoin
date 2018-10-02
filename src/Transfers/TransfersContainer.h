@@ -1,5 +1,4 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers. 2018 BBSCoin developers
-// Copyright (c) 2018, The Karbo Developers
 //
 // This file is part of BBSCoin.
 //
@@ -173,9 +172,6 @@ public:
   // IStreamSerializable
   virtual void save(std::ostream& os) override;
   virtual void load(std::istream& in) override;
-
-  std::vector<TransactionOutputInformation> m_allTransfers;
-  std::unordered_set<Crypto::PublicKey> m_allOutputKeys;
 
 private:
   struct ContainingTransactionIndex { };
