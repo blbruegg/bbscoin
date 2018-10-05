@@ -37,6 +37,7 @@ using namespace Common;
 
 std::unordered_set<Crypto::Hash> transactions_hash_seen;
 std::unordered_set<Crypto::PublicKey> public_keys_seen;
+std::mutex seen_mutex;
 
 namespace {
 
@@ -426,6 +427,7 @@ void TransfersConsumer::removeUnconfirmedTransaction(const Crypto::Hash& transac
 }
 
 void TransfersConsumer::addPublicKeysSeen(const Crypto::Hash& transactionHash, const Crypto::PublicKey& outputKey) {
+    std::lock_guard<std::mutex> lk(seen_mutex);
     transactions_hash_seen.insert(transactionHash);
     public_keys_seen.insert(outputKey);
 }
@@ -440,6 +442,8 @@ std::error_code createTransfers(
 
   auto txPubKey = tx.getTransactionPublicKey();
   std::vector<PublicKey> temp_keys;
+
+  std::lock_guard<std::mutex> lk(seen_mutex);
 
   for (auto idx : outputs) {
 
