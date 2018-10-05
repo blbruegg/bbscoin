@@ -1,3 +1,10 @@
+|| Release notes 4.1.2
+
+Updated burning bug fixes: 
+- It will check all existed transactions in wallet also.
+- Performance improved
+- Fixed crashes
+
 || Release notes 4.1.1
 
 Fix burning bug
