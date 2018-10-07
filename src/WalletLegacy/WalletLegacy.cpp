@@ -239,7 +239,7 @@ void WalletLegacy::doLoad(std::istream& source) {
     m_transferDetails->getOutputs(allTransfers, ITransfersContainer::IncludeAll);
     std::cout << "Loaded " + std::to_string(allTransfers.size()) + " known transfer(s)\r\n";
     for (auto& o : allTransfers) {
-      if (o.globalOutputIndex != UNCONFIRMED_TRANSACTION_GLOBAL_OUTPUT_INDEX && o.type == TransactionTypes::OutputType::Key) {
+      if (o.type == TransactionTypes::OutputType::Key) {
         m_transfersSync.addPublicKeysSeen(m_account.getAccountKeys().address, o.transactionHash, o.outputKey);
       }
     }

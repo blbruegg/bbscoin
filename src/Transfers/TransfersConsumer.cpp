@@ -474,14 +474,14 @@ std::error_code createTransfers(
       assert(out.key == reinterpret_cast<const PublicKey&>(in_ephemeral.publicKey));
 
       std::unordered_set<Crypto::Hash>::iterator it = transactions_hash_seen.find(tx.getTransactionHash());
-      if (it == transactions_hash_seen.end()) {
+	  if (it == transactions_hash_seen.end()) {
         std::unordered_set<Crypto::PublicKey>::iterator key_it = public_keys_seen.find(out.key);
         if (key_it != public_keys_seen.end()) {
           throw std::runtime_error("duplicate transaction output key is found");
           return std::error_code();
         }
         temp_keys.push_back(out.key);
-      }
+	  }
       info.amount = amount;
 
       info.outputKey = out.key;
@@ -491,11 +491,9 @@ std::error_code createTransfers(
     transfers.push_back(info);
   }
 
-  if (blockInfo.height != WALLET_UNCONFIRMED_TRANSACTION_HEIGHT) {
-    transactions_hash_seen.insert(tx.getTransactionHash());
-    for (std::vector<PublicKey>::iterator it = temp_keys.begin(); it != temp_keys.end(); it++) {
-      public_keys_seen.insert(*it);
-    }
+  transactions_hash_seen.insert(tx.getTransactionHash());
+  for (std::vector<PublicKey>::iterator it = temp_keys.begin(); it != temp_keys.end(); it++) {
+    public_keys_seen.insert(*it);
   }
 
   return std::error_code();
