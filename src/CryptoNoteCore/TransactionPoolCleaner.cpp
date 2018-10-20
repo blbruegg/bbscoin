@@ -110,7 +110,7 @@ std::vector<Crypto::Hash> TransactionPoolCleanWrapper::clean() {
 bool TransactionPoolCleanWrapper::isTransactionRecentlyDeleted(const Crypto::Hash& hash) const {
   uint64_t currentTime = timeProvider->now();
   auto it = recentlyDeletedTransactions.find(hash);
-  return it != recentlyDeletedTransactions.end() && (currentTime - it->second) >= (timeout * CryptoNote::parameters::CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL);
+  return it != recentlyDeletedTransactions.end() && (currentTime - it->second) < (timeout * CryptoNote::parameters::CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL);
 }
 
 void TransactionPoolCleanWrapper::cleanRecentlyDeletedTransactions(uint64_t currentTime) {
