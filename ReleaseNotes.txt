@@ -1,3 +1,9 @@
+|| Release notes 4.2.0
+
+Switch to LWMA-3 Difficulty Algorithm
+Mempool will delete outdated transactions for 7 days
+Fix infinite unlock time when transfer using simplewallet RPC
+
 || Release notes 4.1.2
 
 Updated burning bug fixes: 
