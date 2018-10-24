@@ -93,6 +93,10 @@ const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_V2                             = 60000;
 const uint32_t UPGRADE_HEIGHT_V3                             = 72500;
 const uint32_t UPGRADE_HEIGHT_V4                             = 180000;
+
+const uint32_t UPGRADE_DIFFICULTY_HEIGHT_LWMA_V3             = 201500;
+const uint64_t DIFFICULTY_BLOCKS_COUNT_LWMA_V3               = DIFFICULTY_WINDOW_V4 + 1;
+
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 1;               // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
 const uint32_t UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
