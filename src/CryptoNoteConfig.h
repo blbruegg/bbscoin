@@ -93,6 +93,7 @@ const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;
 const uint32_t UPGRADE_HEIGHT_V2                             = 60000;
 const uint32_t UPGRADE_HEIGHT_V3                             = 72500;
 const uint32_t UPGRADE_HEIGHT_V4                             = 180000;
+const uint32_t UPGRADE_HEIGHT_V5                             = 202050;
 
 const uint32_t UPGRADE_DIFFICULTY_HEIGHT_LWMA_V3             = 201500;
 const uint64_t DIFFICULTY_BLOCKS_COUNT_LWMA_V3               = DIFFICULTY_WINDOW_V4 + 1;
@@ -119,6 +120,7 @@ const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
 const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
 const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
+const uint8_t  BLOCK_MAJOR_VERSION_5                         =  5;
 const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;
 

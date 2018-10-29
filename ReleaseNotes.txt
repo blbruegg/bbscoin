@@ -1,3 +1,7 @@
+|| Release notes 5.0.0
+
+Bump block version
+
 || Release notes 4.2.0
 
 Switch to LWMA-3 Difficulty Algorithm
