@@ -1508,7 +1508,7 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
     }
 
     if (block.majorVersion >= BLOCK_MAJOR_VERSION_6) {
-      if (cachedBlock.getParentBlockBinaryArray(false).size() > 120 || 
+      if (cachedBlock.getParentBlockBinaryArray(false).size() > 110 || 
           block.previousBlockHash != block.parentBlock.previousBlockHash) {
         return error::BlockValidationError::ILLEGAL_PARENT_BLOCK;
       }
