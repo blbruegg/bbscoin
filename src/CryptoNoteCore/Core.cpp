@@ -200,6 +200,7 @@ Core::Core(const Currency& currency, Logging::ILogger& logger, Checkpoints&& che
   upgradeManager->addMajorBlockVersion(BLOCK_MAJOR_VERSION_3, currency.upgradeHeight(BLOCK_MAJOR_VERSION_3));
   upgradeManager->addMajorBlockVersion(BLOCK_MAJOR_VERSION_4, currency.upgradeHeight(BLOCK_MAJOR_VERSION_4));
   upgradeManager->addMajorBlockVersion(BLOCK_MAJOR_VERSION_5, currency.upgradeHeight(BLOCK_MAJOR_VERSION_5));
+  upgradeManager->addMajorBlockVersion(BLOCK_MAJOR_VERSION_6, currency.upgradeHeight(BLOCK_MAJOR_VERSION_6));
 
   transactionPool = std::unique_ptr<ITransactionPoolCleanWrapper>(new TransactionPoolCleanWrapper(
     std::unique_ptr<ITransactionPool>(new TransactionPool(logger)),
@@ -1506,8 +1507,15 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
       return error::BlockValidationError::PARENT_BLOCK_WRONG_VERSION;
     }
 
-    if (cachedBlock.getParentBlockBinaryArray(false).size() > 2048) {
-      return error::BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG;
+    if (block.majorVersion >= BLOCK_MAJOR_VERSION_6) {
+      if (cachedBlock.getParentBlockBinaryArray(false).size() > 110 || 
+          block.previousBlockHash != block.parentBlock.previousBlockHash) {
+        return error::BlockValidationError::ILLEGAL_PARENT_BLOCK;
+      }
+    } else {
+      if (cachedBlock.getParentBlockBinaryArray(false).size() > 2048) {
+        return error::BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG;
+      }
     }
   }
 

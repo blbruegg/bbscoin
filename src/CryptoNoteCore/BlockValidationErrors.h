@@ -35,7 +35,8 @@ enum class BlockValidationError {
   BLOCK_REWARD_MISMATCH,
   CHECKPOINT_BLOCK_HASH_MISMATCH,
   PROOF_OF_WORK_TOO_WEAK,
-  TRANSACTION_ABSENT_IN_POOL
+  TRANSACTION_ABSENT_IN_POOL,
+  ILLEGAL_PARENT_BLOCK
 };
 
 // custom category:
@@ -57,6 +58,7 @@ public:
     switch (code) {
       case BlockValidationError::VALIDATION_SUCCESS: return "Block validated successfully";
       case BlockValidationError::WRONG_VERSION: return "Wrong block version. Please check if there is a new version from https://bbscoin.xyz";
+      case BlockValidationError::ILLEGAL_PARENT_BLOCK: return "Illegal block structure. Please use supported pool software from https://github.com/bbscoin/bbscoin-pool";
       case BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG: return "Parent block size is too big";
       case BlockValidationError::PARENT_BLOCK_WRONG_VERSION: return "Parent block has wrong version";
       case BlockValidationError::TIMESTAMP_TOO_FAR_IN_FUTURE: return "Timestamp is too far in future";

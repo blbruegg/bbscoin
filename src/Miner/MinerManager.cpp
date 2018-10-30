@@ -263,6 +263,8 @@ BlockMiningParameters MinerManager::requestMiningParameters(System::Dispatcher& 
 void MinerManager::adjustBlockTemplate(CryptoNote::BlockTemplate& blockTemplate) const {
   adjustMergeMiningTag(blockTemplate);
 
+  blockTemplate.parentBlock.previousBlockHash = blockTemplate.previousBlockHash;
+
   if (m_config.firstBlockTimestamp == 0) {
     //no need to fix timestamp
     return;
