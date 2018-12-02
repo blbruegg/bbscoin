@@ -49,7 +49,7 @@ option(WITH_SNAPPY "build with SNAPPY" OFF)
 option(WITH_LZ4 "build with lz4" OFF)
 option(WITH_ZLIB "build with zlib" OFF)
 if(APPLE)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.14)
 endif()
 if(MSVC)
   # Defaults currently different for GFLAGS.
