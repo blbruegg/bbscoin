@@ -430,7 +430,8 @@ std::error_code createTransfers(
   const ITransactionReader& tx,
   const std::vector<uint32_t>& outputs,
   const std::vector<uint32_t>& globalIdxs,
-  std::vector<TransactionOutputInformationIn>& transfers) {
+  std::vector<TransactionOutputInformationIn>& transfers,
+  Logging::LoggerRef& m_logger) {
 
   auto txPubKey = tx.getTransactionPublicKey();
   std::vector<PublicKey> temp_keys;
@@ -438,6 +439,8 @@ std::error_code createTransfers(
   std::lock_guard<std::mutex> lk(seen_mutex);
 
   for (auto idx : outputs) {
+
+    bool isDuplicate = false;
 
     if (idx >= tx.getOutputCount()) {
       return std::make_error_code(std::errc::argument_out_of_domain);
@@ -473,14 +476,13 @@ std::error_code createTransfers(
 
       assert(out.key == reinterpret_cast<const PublicKey&>(in_ephemeral.publicKey));
 
-      std::unordered_set<Crypto::Hash>::iterator it = transactions_hash_seen.find(tx.getTransactionHash());
-	  if (it == transactions_hash_seen.end()) {
-        std::unordered_set<Crypto::PublicKey>::iterator key_it = public_keys_seen.find(out.key);
-        if (key_it != public_keys_seen.end()) {
-          throw std::runtime_error("duplicate transaction output key is found");
-          return std::error_code();
+	  if (transactions_hash_seen.find(tx.getTransactionHash()) == transactions_hash_seen.end()) {
+        if (public_keys_seen.find(out.key) != public_keys_seen.end()) {
+          m_logger(WARNING, BRIGHT_RED) << "A duplicate public key was found in " << Common::podToHex(tx.getTransactionHash());
+          isDuplicate = true;
+        } else {
+          temp_keys.push_back(out.key);
         }
-        temp_keys.push_back(out.key);
 	  }
       info.amount = amount;
 
@@ -488,7 +490,9 @@ std::error_code createTransfers(
 
     }
 
-    transfers.push_back(info);
+    if (!isDuplicate) {
+        transfers.push_back(info);
+    }
   }
 
   transactions_hash_seen.insert(tx.getTransactionHash());
@@ -527,7 +531,7 @@ std::error_code TransfersConsumer::preprocessOutputs(const TransactionBlockInfo&
     if (it != m_subscriptions.end()) {
       auto& transfers = info.outputs[kv.first];
       try {
-          errorCode = createTransfers(it->second->getKeys(), blockInfo, tx, kv.second, info.globalIdxs, transfers);
+          errorCode = createTransfers(it->second->getKeys(), blockInfo, tx, kv.second, info.globalIdxs, transfers, m_logger);
           if (errorCode) {
             return errorCode;
           }
