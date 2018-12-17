@@ -438,11 +438,7 @@ std::error_code createTransfers(
 
   std::lock_guard<std::mutex> lk(seen_mutex);
 
-  bool insertTransactionSeen = true;
-
   for (auto idx : outputs) {
-
-    bool isDuplicate = false;
 
     if (idx >= tx.getOutputCount()) {
       return std::make_error_code(std::errc::argument_out_of_domain);
@@ -481,8 +477,7 @@ std::error_code createTransfers(
 	  if (transactions_hash_seen.find(tx.getTransactionHash()) == transactions_hash_seen.end()) {
         if (public_keys_seen.find(out.key) != public_keys_seen.end()) {
           m_logger(WARNING, BRIGHT_RED) << "A duplicate public key was found in " << Common::podToHex(tx.getTransactionHash());
-          isDuplicate = true;
-          insertTransactionSeen = false;
+          return std::error_code();
         } else {
           temp_keys.push_back(out.key);
         }
@@ -493,15 +488,10 @@ std::error_code createTransfers(
 
     }
 
-    if (!isDuplicate) {
-        transfers.push_back(info);
-    }
+    transfers.push_back(info);
   }
 
-  if (insertTransactionSeen) {
-    transactions_hash_seen.insert(tx.getTransactionHash());
-  }
-
+  transactions_hash_seen.insert(tx.getTransactionHash());
   for (std::vector<PublicKey>::iterator it = temp_keys.begin(); it != temp_keys.end(); it++) {
     public_keys_seen.insert(*it);
   }
