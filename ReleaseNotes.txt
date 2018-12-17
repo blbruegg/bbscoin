@@ -1,3 +1,8 @@
+|| Release notes 6.0.1
+
+Optimize code
+Fix stuck after TCP EPOLLERR | EPOLLHUP
+
 || Release notes 6.0.0
 
 Add extra validation on block structure.
