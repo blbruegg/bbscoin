@@ -521,7 +521,7 @@ Difficulty Core::getDifficultyForNextBlock() const {
 
   uint32_t topBlockIndex = mainChain->getTopBlockIndex();
 
-  uint8_t nextBlockMajorVersion = getBlockMajorVersionForHeight(topBlockIndex);
+  uint8_t nextBlockMajorVersion = getBlockMajorVersionForHeight(topBlockIndex + 1);
 
   size_t blocksCount = std::min(static_cast<size_t>(topBlockIndex), currency.difficultyBlocksCountByBlockVersion(nextBlockMajorVersion, topBlockIndex));
 
