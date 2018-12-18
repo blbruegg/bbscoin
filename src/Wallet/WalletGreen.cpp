@@ -1039,13 +1039,14 @@ std::vector<std::string> WalletGreen::doCreateAddressList(const std::vector<NewA
         m_logger(INFO, BRIGHT_WHITE) << "New wallet added " << address << ", creation timestamp " << addressData.creationTimestamp;
         addresses.push_back(std::move(address));
 
-        minCreationTimestamp = std::min(minCreationTimestamp, addressData.creationTimestamp);
+        // Reset or Sync from now
+        minCreationTimestamp = std::min(minCreationTimestamp, addressData.creationTimestamp != 0 ? static_cast<uint64_t>(time(nullptr)) : 0);
       }
     }
 
     m_containerStorage.setAutoFlush(true);
     auto currentTime = static_cast<uint64_t>(time(nullptr));
-    if (minCreationTimestamp + m_currency.blockFutureTimeLimitByBlockVersion(BLOCK_MAJOR_VERSION_2) < currentTime) {
+    if (minCreationTimestamp + m_currency.blockFutureTimeLimitByBlockVersion(BLOCK_MAJOR_VERSION_4) < currentTime) {
       m_logger(DEBUGGING) << "Reset is required";
       save(WalletSaveLevel::SAVE_KEYS_AND_TRANSACTIONS, m_extra);
       shutdown();
