@@ -26,4 +26,6 @@ RUN set -ex; \
 EXPOSE 11204
 EXPOSE 21204
 
+VOLUME ["/root/.BBSCoin"]
+
 ENTRYPOINT [ "/usr/local/bin/bbscoind" ]
