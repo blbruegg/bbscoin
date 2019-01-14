@@ -7,7 +7,7 @@ RUN set -ex; \
     git clone https://github.com/bbscoin/bbscoin.git; \
     cd bbscoin; \
     make -j$(nproc); \
-    apt-get remove -y build-essential libboost-all-dev git cmake; \
+    apt-get remove -y build-essential libboost1.65-all-dev git cmake; \
     apt-get autoremove -y; \
     apt-get install -y \
       libboost-system1.65 \
