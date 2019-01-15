@@ -1506,8 +1506,11 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
                                 << " expected version is " << static_cast<int>(BLOCK_MAJOR_VERSION_1);
       return error::BlockValidationError::PARENT_BLOCK_WRONG_VERSION;
     }
-
-    if (block.majorVersion >= BLOCK_MAJOR_VERSION_6) {
+	
+	  if (cachedBlock.getParentBlockBinaryArray(false).size() > 2048) {
+      return error::BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG;
+	  }
+    /*if (block.majorVersion >= BLOCK_MAJOR_VERSION_6) {
       if (cachedBlock.getParentBlockBinaryArray(false).size() > 110 || 
           block.previousBlockHash != block.parentBlock.previousBlockHash) {
         return error::BlockValidationError::ILLEGAL_PARENT_BLOCK;
@@ -1516,7 +1519,7 @@ std::error_code Core::validateBlock(const CachedBlock& cachedBlock, IBlockchainC
       if (cachedBlock.getParentBlockBinaryArray(false).size() > 2048) {
         return error::BlockValidationError::PARENT_BLOCK_SIZE_TOO_BIG;
       }
-    }
+    }*/
   }
 
   if (block.timestamp > getAdjustedTime() + currency.blockFutureTimeLimitByBlockVersion(block.majorVersion)) {
